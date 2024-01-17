@@ -29,11 +29,22 @@ insertPersonQuery = "INSERT INTO Persons (name, number) VALUES (?, ?)"
 deletePersonQuery :: Query
 deletePersonQuery = "DELETE FROM Persons WHERE id = ?"
 
+personByIdQuery :: Query
+personByIdQuery = "SELECT * FROM Persons WHERE id = ?"
+
 personByNameQuery :: Query
 personByNameQuery = "SELECT * FROM Persons WHERE name = ?"
 
 peopleInDB :: Connection -> IO [Person]
 peopleInDB db = query_ db allPersonsQuery
+
+personById :: Connection -> Int -> IO (Maybe Person)
+personById db personId = do
+  people <- query db personByIdQuery (Only personId) :: IO [Person]
+
+  case people of
+    [] -> return Nothing
+    (x : _) -> return . Just $ x
 
 insertPersonInDB :: Connection -> NewPersonDTO -> IO Person
 insertPersonInDB db np = do

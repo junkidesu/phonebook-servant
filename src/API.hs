@@ -41,7 +41,12 @@ personsServer db =
         Right p -> return p
 
     getPerson :: Int -> Handler Person
-    getPerson = undefined
+    getPerson personId = do
+      person <- liftIO $ personById db personId
+
+      case person of
+        Nothing -> throwError err404 {errBody = "Person not found :("}
+        Just p -> return p
 
     deletePerson :: Int -> Handler NoContent
     deletePerson personId = do
