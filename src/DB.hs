@@ -26,6 +26,9 @@ allPersonsQuery = "SELECT * FROM Persons"
 insertPersonQuery :: Query
 insertPersonQuery = "INSERT INTO Persons (name, number) VALUES (?, ?)"
 
+deletePersonQuery :: Query
+deletePersonQuery = "DELETE FROM Persons WHERE id = ?"
+
 personByNameQuery :: Query
 personByNameQuery = "SELECT * FROM Persons WHERE name = ?"
 
@@ -39,3 +42,6 @@ insertPersonInDB db np = do
   [person] <- query db personByNameQuery (Only . newName $ np) :: IO [Person]
 
   return person
+
+deletePersonFromDB :: Connection -> Int -> IO ()
+deletePersonFromDB db personId = execute db deletePersonQuery (Only personId)

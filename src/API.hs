@@ -16,10 +16,18 @@ type GetAllPersons = Get '[JSON] [Person]
 
 type AddPerson = ReqBody '[JSON] NewPersonDTO :> PostCreated '[JSON] Person
 
-type PersonAPI = "persons" :> (GetAllPersons :<|> AddPerson)
+type GetPerson = Capture "id" Int :> Get '[JSON] Person
+
+type DeletePerson = Capture "id" Int :> DeleteNoContent
+
+type PersonAPI = "persons" :> (GetAllPersons :<|> AddPerson :<|> GetPerson :<|> DeletePerson)
 
 personsServer :: Connection -> Server PersonAPI
-personsServer db = getAllPersons :<|> addPerson
+personsServer db =
+  getAllPersons
+    :<|> addPerson
+    :<|> getPerson
+    :<|> deletePerson
   where
     getAllPersons :: Handler [Person]
     getAllPersons = liftIO . peopleInDB $ db
@@ -31,3 +39,11 @@ personsServer db = getAllPersons :<|> addPerson
       case res of
         Left _ -> throwError err400 {errBody = "Couldn't add new person :("}
         Right p -> return p
+
+    getPerson :: Int -> Handler Person
+    getPerson = undefined
+
+    deletePerson :: Int -> Handler NoContent
+    deletePerson personId = do
+      liftIO $ deletePersonFromDB db personId
+      return NoContent
