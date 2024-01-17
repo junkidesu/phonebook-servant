@@ -1,40 +1,25 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeOperators   #-}
-module Lib
-    ( startApp
-    , app
-    ) where
+{-# LANGUAGE DataKinds #-}
 
-import Data.Aeson
-import Data.Aeson.TH
+module Lib
+  ( startApp,
+    app,
+  )
+where
+
+import DB
+import Database.SQLite.Simple
 import Network.Wai
 import Network.Wai.Handler.Warp
+import API
 import Servant
 
-data User = User
-  { userId        :: Int
-  , userFirstName :: String
-  , userLastName  :: String
-  } deriving (Eq, Show)
-
-$(deriveJSON defaultOptions ''User)
-
-type API = "users" :> Get '[JSON] [User]
-
 startApp :: IO ()
-startApp = run 8080 app
+startApp = do
+  db <- openDB
+  run 8080 $ app db
 
-app :: Application
-app = serve api server
+app :: Connection -> Application
+app = serve api . personsServer
 
-api :: Proxy API
+api :: Proxy PersonAPI
 api = Proxy
-
-server :: Server API
-server = return users
-
-users :: [User]
-users = [ User 1 "Isaac" "Newton"
-        , User 2 "Albert" "Einstein"
-        ]
