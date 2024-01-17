@@ -7,7 +7,7 @@ module API (PersonAPI, personsServer) where
 import Control.Exception (try)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import DB
-import DTO (NewPersonDTO)
+import DTO (NewPersonDTO, UpdatePersonDTO)
 import Database.SQLite.Simple
 import Model
 import Servant
@@ -16,18 +16,26 @@ type GetAllPersons = Get '[JSON] [Person]
 
 type AddPerson = ReqBody '[JSON] NewPersonDTO :> PostCreated '[JSON] Person
 
-type GetPerson = Capture "id" Int :> Get '[JSON] Person
+type GetPerson = Get '[JSON] Person
 
-type DeletePerson = Capture "id" Int :> DeleteNoContent
+type DeletePerson = DeleteNoContent
 
-type PersonAPI = "persons" :> (GetAllPersons :<|> AddPerson :<|> GetPerson :<|> DeletePerson)
+type ChangeNumber = ReqBody '[JSON] UpdatePersonDTO :> Put '[JSON] Person
+
+type PersonOperations = Capture "id" Int :> (GetPerson :<|> DeletePerson :<|> ChangeNumber)
+
+type PersonAPI =
+  "persons"
+    :> ( GetAllPersons
+           :<|> AddPerson
+           :<|> PersonOperations
+       )
 
 personsServer :: Connection -> Server PersonAPI
 personsServer db =
   getAllPersons
     :<|> addPerson
-    :<|> getPerson
-    :<|> deletePerson
+    :<|> personOperations
   where
     getAllPersons :: Handler [Person]
     getAllPersons = liftIO . peopleInDB $ db
@@ -40,15 +48,20 @@ personsServer db =
         Left _ -> throwError err400 {errBody = "Couldn't add new person :("}
         Right p -> return p
 
-    getPerson :: Int -> Handler Person
-    getPerson personId = do
-      person <- liftIO $ personById db personId
+    personOperations personId = getPerson :<|> deletePerson :<|> changeNumber
+      where
+        getPerson :: Handler Person
+        getPerson = do
+          person <- liftIO $ personById db personId
 
-      case person of
-        Nothing -> throwError err404 {errBody = "Person not found :("}
-        Just p -> return p
+          case person of
+            Nothing -> throwError err404 {errBody = "Person not found :("}
+            Just p -> return p
 
-    deletePerson :: Int -> Handler NoContent
-    deletePerson personId = do
-      liftIO $ deletePersonFromDB db personId
-      return NoContent
+        deletePerson :: Handler NoContent
+        deletePerson = do
+          liftIO $ deletePersonFromDB db personId
+          return NoContent
+
+        changeNumber :: UpdatePersonDTO -> Handler Person
+        changeNumber = liftIO . updateNumberInDB db personId

@@ -3,7 +3,7 @@
 
 module DB where
 
-import DTO (NewPersonDTO (..))
+import DTO (NewPersonDTO (..), UpdatePersonDTO (UpdatePersonDTO))
 import Database.SQLite.Simple
 import Model (Person)
 
@@ -29,6 +29,9 @@ insertPersonQuery = "INSERT INTO Persons (name, number) VALUES (?, ?)"
 deletePersonQuery :: Query
 deletePersonQuery = "DELETE FROM Persons WHERE id = ?"
 
+updateNumberQuery :: Query
+updateNumberQuery = "UPDATE Persons SET number = ? WHERE id = ?"
+
 personByIdQuery :: Query
 personByIdQuery = "SELECT * FROM Persons WHERE id = ?"
 
@@ -51,6 +54,14 @@ insertPersonInDB db np = do
   execute db insertPersonQuery np
 
   [person] <- query db personByNameQuery (Only . newName $ np) :: IO [Person]
+
+  return person
+
+updateNumberInDB :: Connection -> Int -> UpdatePersonDTO -> IO Person
+updateNumberInDB db personId (UpdatePersonDTO number) = do
+  execute db updateNumberQuery (number, personId)
+
+  [person] <- query db personByIdQuery (Only personId) :: IO [Person]
 
   return person
 
