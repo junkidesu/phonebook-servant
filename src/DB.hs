@@ -57,13 +57,10 @@ insertPersonInDB db np = do
 
   return person
 
-updateNumberInDB :: Connection -> Int -> UpdatePersonDTO -> IO Person
+updateNumberInDB :: Connection -> Int -> UpdatePersonDTO -> IO (Maybe Person)
 updateNumberInDB db personId (UpdatePersonDTO number) = do
   execute db updateNumberQuery (number, personId)
-
-  [person] <- query db personByIdQuery (Only personId) :: IO [Person]
-
-  return person
+  personById db personId
 
 deletePersonFromDB :: Connection -> Int -> IO ()
 deletePersonFromDB db personId = execute db deletePersonQuery (Only personId)

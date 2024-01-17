@@ -64,4 +64,9 @@ personsServer db =
           return NoContent
 
         changeNumber :: UpdatePersonDTO -> Handler Person
-        changeNumber = liftIO . updateNumberInDB db personId
+        changeNumber up = do
+          res <- liftIO . updateNumberInDB db personId $ up
+
+          case res of
+            Nothing -> throwError err404 {errBody = "Person not found :("}
+            Just p -> return p
