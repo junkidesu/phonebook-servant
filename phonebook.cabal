@@ -26,11 +26,11 @@ source-repository head
 library
   exposed-modules:
       API
+      DB.Model
       DB.Operations
       DB.Queries
       DTO
       Lib
-      Model
   other-modules:
       Paths_phonebook
   autogen-modules:

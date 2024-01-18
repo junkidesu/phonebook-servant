@@ -6,10 +6,10 @@ module API (PersonAPI, personsServer) where
 
 import Control.Exception (try)
 import Control.Monad.IO.Class (MonadIO (liftIO))
+import DB.Model
 import DB.Operations
 import DTO (NewPersonDTO, UpdatePersonDTO)
 import Database.SQLite.Simple
-import Model
 import Servant
 
 type GetAllPersons = Get '[JSON] [Person]

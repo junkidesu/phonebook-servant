@@ -2,10 +2,10 @@
 
 module DB.Operations where
 
+import DB.Model (Person)
 import DB.Queries
 import DTO (NewPersonDTO (..), UpdatePersonDTO (UpdatePersonDTO))
 import Database.SQLite.Simple
-import Model (Person)
 
 openDB :: IO Connection
 openDB = do

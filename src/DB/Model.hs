@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Model (Person) where
+module DB.Model (Person) where
 
 import Data.Aeson
 import Database.SQLite.Simple
