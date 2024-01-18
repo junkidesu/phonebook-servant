@@ -22,13 +22,13 @@ type DeletePerson = DeleteNoContent
 
 type ChangeNumber = ReqBody '[JSON] UpdatePersonDTO :> Put '[JSON] Person
 
-type PersonOperations = Capture "id" Int :> (GetPerson :<|> DeletePerson :<|> ChangeNumber)
-
 type PersonAPI =
   "persons"
     :> ( GetAllPersons
            :<|> AddPerson
-           :<|> PersonOperations
+           :<|> Capture "id" Int
+             :> ( GetPerson :<|> DeletePerson :<|> ChangeNumber
+                )
        )
 
 personsServer :: Connection -> Server PersonAPI
