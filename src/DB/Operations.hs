@@ -1,42 +1,17 @@
-{-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 
-module DB where
+module DB.Operations where
 
+import DB.Queries
 import DTO (NewPersonDTO (..), UpdatePersonDTO (UpdatePersonDTO))
 import Database.SQLite.Simple
 import Model (Person)
-
-initDBQuery :: Query
-initDBQuery =
-  "CREATE TABLE IF NOT EXISTS Persons ("
-    <> "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-    <> "name TEXT NOT NULL UNIQUE,"
-    <> "number TEXT)"
 
 openDB :: IO Connection
 openDB = do
   db <- open "dev.db"
   execute_ db initDBQuery
   return db
-
-allPersonsQuery :: Query
-allPersonsQuery = "SELECT * FROM Persons"
-
-insertPersonQuery :: Query
-insertPersonQuery = "INSERT INTO Persons (name, number) VALUES (?, ?)"
-
-deletePersonQuery :: Query
-deletePersonQuery = "DELETE FROM Persons WHERE id = ?"
-
-updateNumberQuery :: Query
-updateNumberQuery = "UPDATE Persons SET number = ? WHERE id = ?"
-
-personByIdQuery :: Query
-personByIdQuery = "SELECT * FROM Persons WHERE id = ?"
-
-personByNameQuery :: Query
-personByNameQuery = "SELECT * FROM Persons WHERE name = ?"
 
 peopleInDB :: Connection -> IO [Person]
 peopleInDB db = query_ db allPersonsQuery

@@ -6,7 +6,7 @@ module API (PersonAPI, personsServer) where
 
 import Control.Exception (try)
 import Control.Monad.IO.Class (MonadIO (liftIO))
-import DB
+import DB.Operations
 import DTO (NewPersonDTO, UpdatePersonDTO)
 import Database.SQLite.Simple
 import Model

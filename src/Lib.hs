@@ -6,11 +6,11 @@ module Lib
   )
 where
 
-import DB
+import API
+import DB.Operations
 import Database.SQLite.Simple
 import Network.Wai
 import Network.Wai.Handler.Warp
-import API
 import Servant
 
 startApp :: IO ()
