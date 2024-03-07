@@ -1,9 +1,9 @@
-FROM haskell:9.6.3
+FROM --platform=linux/amd64 haskell:9.6.3 as build-stage
 
 WORKDIR /opt/example
 
 COPY . .
 
-RUN stack build
+RUN stack install phonebook
 
-CMD ["stack", "exec", "phonebook-exe"]
+CMD ["phonebook-exe"]
