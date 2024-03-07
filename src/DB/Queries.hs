@@ -3,7 +3,7 @@
 
 module DB.Queries where
 
-import Database.SQLite.Simple
+import Database.SQLite.Simple (Query)
 
 initDBQuery :: Query
 initDBQuery =
