@@ -41,8 +41,12 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
+    , postgresql-simple
     , servant-server
     , sqlite-simple
+    , text
+    , utf8-string
     , wai
     , warp
   default-language: Haskell2010
@@ -59,9 +63,13 @@ executable phonebook-exe
   build-depends:
       aeson
     , base
+    , bytestring
     , phonebook
+    , postgresql-simple
     , servant-server
     , sqlite-simple
+    , text
+    , utf8-string
     , wai
     , warp
   default-language: Haskell2010
@@ -79,12 +87,16 @@ test-suite phonebook-test
   build-depends:
       aeson
     , base
+    , bytestring
     , hspec
     , hspec-wai
     , hspec-wai-json
     , phonebook
+    , postgresql-simple
     , servant-server
     , sqlite-simple
+    , text
+    , utf8-string
     , wai
     , warp
   default-language: Haskell2010

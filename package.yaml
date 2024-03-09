@@ -22,7 +22,11 @@ description:         Please see the README on GitHub at <https://github.com/gith
 dependencies:
 - base >= 4.7 && < 5
 - aeson
+- text
+- bytestring
+- utf8-string
 - sqlite-simple
+- postgresql-simple
 - servant-server
 - wai
 - warp

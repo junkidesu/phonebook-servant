@@ -16,7 +16,7 @@ import DB.Operations (
   updateNumberInDB,
  )
 import DTO (NewPersonDTO, UpdatePersonDTO)
-import Database.SQLite.Simple (Connection, SQLError)
+import Database.PostgreSQL.Simple
 import Servant
 
 type GetAllPersons = Get '[JSON] [Person]
@@ -47,7 +47,7 @@ personsServer db =
 
   addPerson :: NewPersonDTO -> Handler Person
   addPerson np = do
-    res <- liftIO (try (insertPersonInDB db np) :: IO (Either SQLError Person))
+    res <- liftIO (try (insertPersonInDB db np) :: IO (Either SqlError Person))
 
     case res of
       Left _ -> throwError err400{errBody = "Couldn't add new person :("}

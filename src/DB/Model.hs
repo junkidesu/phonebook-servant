@@ -3,13 +3,14 @@
 module DB.Model (Person) where
 
 import Data.Aeson
-import Database.SQLite.Simple
+import Data.Text
+import Database.PostgreSQL.Simple
 import GHC.Generics (Generic)
 
 data Person = Person
-  { id :: Int,
-    name :: String,
-    number :: Maybe String
+  { id :: !Int
+  , name :: !Text
+  , number :: !(Maybe Text)
   }
   deriving (Show, Eq, Generic)
 

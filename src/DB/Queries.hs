@@ -3,29 +3,29 @@
 
 module DB.Queries where
 
-import Database.SQLite.Simple (Query)
+import Database.PostgreSQL.Simple
 
 initDBQuery :: Query
 initDBQuery =
-  "CREATE TABLE IF NOT EXISTS Persons ("
-    <> "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+  "CREATE TABLE IF NOT EXISTS persons ("
+    <> "id SERIAL PRIMARY KEY,"
     <> "name TEXT NOT NULL UNIQUE,"
     <> "number TEXT)"
 
 allPersonsQuery :: Query
-allPersonsQuery = "SELECT * FROM Persons"
+allPersonsQuery = "SELECT * FROM persons"
 
 insertPersonQuery :: Query
-insertPersonQuery = "INSERT INTO Persons (name, number) VALUES (?, ?)"
+insertPersonQuery = "INSERT INTO persons (name, number) VALUES (?, ?) RETURNING id, name, number"
 
 deletePersonQuery :: Query
-deletePersonQuery = "DELETE FROM Persons WHERE id = ?"
+deletePersonQuery = "DELETE FROM persons WHERE id = ?"
 
 updateNumberQuery :: Query
-updateNumberQuery = "UPDATE Persons SET number = ? WHERE id = ?"
+updateNumberQuery = "UPDATE persons SET number = ? WHERE id = ?"
 
 personByIdQuery :: Query
-personByIdQuery = "SELECT * FROM Persons WHERE id = ?"
+personByIdQuery = "SELECT * FROM persons WHERE id = ?"
 
 personByNameQuery :: Query
-personByNameQuery = "SELECT * FROM Persons WHERE name = ?"
+personByNameQuery = "SELECT * FROM persons WHERE name = ?"

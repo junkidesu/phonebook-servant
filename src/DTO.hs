@@ -7,10 +7,11 @@ module DTO where
 
 import Data.Aeson
 import Data.Aeson.Types (Parser)
-import Database.SQLite.Simple
+import Data.Text
+import Database.PostgreSQL.Simple
 import GHC.Generics (Generic)
 
-data NewPersonDTO = NewPersonDTO {newName :: String, newNumber :: Maybe String} deriving (Generic)
+data NewPersonDTO = NewPersonDTO {newName :: !Text, newNumber :: !(Maybe Text)} deriving (Generic)
 
 instance FromJSON NewPersonDTO where
   parseJSON :: Value -> Parser NewPersonDTO
@@ -21,7 +22,8 @@ instance FromJSON NewPersonDTO where
 
 instance ToRow NewPersonDTO
 
-newtype UpdatePersonDTO = UpdatePersonDTO {changedNumber :: String} deriving (Generic)
+data UpdatePersonDTO = UpdatePersonDTO {changedNumber :: !Text}
+  deriving (Generic)
 
 instance FromJSON UpdatePersonDTO where
   parseJSON :: Value -> Parser UpdatePersonDTO

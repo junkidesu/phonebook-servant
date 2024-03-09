@@ -8,15 +8,15 @@ where
 
 import API
 import DB.Operations
-import Database.SQLite.Simple
+import Database.PostgreSQL.Simple
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
 
 startApp :: IO ()
 startApp = do
-  db <- openDB
-  run 8080 $ app db
+  conn <- connectToDb
+  run 8080 $ app conn
 
 app :: Connection -> Application
 app = serve api . personsServer
