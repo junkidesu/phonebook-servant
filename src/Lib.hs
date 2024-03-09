@@ -6,9 +6,9 @@ module Lib (
 )
 where
 
-import API
-import DB.Operations
+import Api
 import Database.PostgreSQL.Simple
+import Db.Operations
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Servant
@@ -19,7 +19,7 @@ startApp = do
   run 8080 $ app conn
 
 app :: Connection -> Application
-app = serve api . personsServer
+app = serve api . server
 
-api :: Proxy PersonAPI
+api :: Proxy DocsAPI
 api = Proxy

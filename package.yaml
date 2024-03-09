@@ -25,11 +25,15 @@ dependencies:
 - text
 - bytestring
 - utf8-string
-- sqlite-simple
 - postgresql-simple
+- servant-docs
 - servant-server
 - wai
 - warp
+- http-types
+- servant-openapi3
+- servant-swagger-ui
+- openapi3
 
 ghc-options:
 - -Wall

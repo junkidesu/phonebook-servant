@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 
-module DB.Queries where
+module Db.Queries where
 
 import Database.PostgreSQL.Simple
 
@@ -22,7 +22,7 @@ deletePersonQuery :: Query
 deletePersonQuery = "DELETE FROM persons WHERE id = ?"
 
 updateNumberQuery :: Query
-updateNumberQuery = "UPDATE persons SET number = ? WHERE id = ?"
+updateNumberQuery = "UPDATE persons SET name = ?, number = ? WHERE id = ?"
 
 personByIdQuery :: Query
 personByIdQuery = "SELECT * FROM persons WHERE id = ?"

@@ -25,11 +25,12 @@ source-repository head
 
 library
   exposed-modules:
-      API
-      DB.Model
-      DB.Operations
-      DB.Queries
-      DTO
+      Api
+      Db.Model
+      Db.Operations
+      Db.Queries
+      Dto.EditPerson
+      Dto.NewPerson
       Lib
   other-modules:
       Paths_phonebook
@@ -42,9 +43,13 @@ library
       aeson
     , base >=4.7 && <5
     , bytestring
+    , http-types
+    , openapi3
     , postgresql-simple
+    , servant-docs
+    , servant-openapi3
     , servant-server
-    , sqlite-simple
+    , servant-swagger-ui
     , text
     , utf8-string
     , wai
@@ -64,10 +69,14 @@ executable phonebook-exe
       aeson
     , base
     , bytestring
+    , http-types
+    , openapi3
     , phonebook
     , postgresql-simple
+    , servant-docs
+    , servant-openapi3
     , servant-server
-    , sqlite-simple
+    , servant-swagger-ui
     , text
     , utf8-string
     , wai
@@ -91,10 +100,14 @@ test-suite phonebook-test
     , hspec
     , hspec-wai
     , hspec-wai-json
+    , http-types
+    , openapi3
     , phonebook
     , postgresql-simple
+    , servant-docs
+    , servant-openapi3
     , servant-server
-    , sqlite-simple
+    , servant-swagger-ui
     , text
     , utf8-string
     , wai

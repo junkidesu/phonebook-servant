@@ -1,13 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 
-module DB.Operations where
+module Db.Operations where
 
-import DB.Model (Person)
-import DB.Queries
-import DTO
 import qualified Data.ByteString.UTF8 as BSU
 import Database.PostgreSQL.Simple
+import Db.Model (Person)
+import Db.Queries
+import qualified Dto.EditPerson as EP
+import qualified Dto.NewPerson as NP
 import System.Environment (getEnv)
 
 connectToDb :: IO Connection
@@ -28,14 +29,14 @@ personById db personId = do
     [] -> return Nothing
     (x : _) -> return . Just $ x
 
-insertPersonInDB :: Connection -> NewPersonDTO -> IO Person
+insertPersonInDB :: Connection -> NP.NewPerson -> IO Person
 insertPersonInDB conn np = do
   [person] <- query conn insertPersonQuery np
   return person
 
-updateNumberInDB :: Connection -> Int -> UpdatePersonDTO -> IO (Maybe Person)
-updateNumberInDB db personId (UpdatePersonDTO number) = do
-  _ <- execute db updateNumberQuery (number, personId)
+updateNumberInDB :: Connection -> Int -> EP.EditPerson -> IO (Maybe Person)
+updateNumberInDB db personId up = do
+  _ <- execute db updateNumberQuery (EP.name up, EP.number up, personId)
   personById db personId
 
 deletePersonFromDB :: Connection -> Int -> IO ()
