@@ -2,5 +2,6 @@ PUT http://localhost:8080/persons/:id
 Content-Type: application/json
 
 {
+    "name": "",
     "number": ""
 }

@@ -1,9 +1,9 @@
 {-# LANGUAGE DataKinds #-}
 
-module Lib
-  ( startApp,
-    app,
-  )
+module Lib (
+  startApp,
+  app,
+)
 where
 
 import API

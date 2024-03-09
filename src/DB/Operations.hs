@@ -6,14 +6,6 @@ import DB.Model (Person)
 import DB.Queries
 import DTO (NewPersonDTO (..), UpdatePersonDTO (UpdatePersonDTO))
 import Database.SQLite.Simple
-  ( Connection,
-    Only (Only),
-    execute,
-    execute_,
-    open,
-    query,
-    query_,
-  )
 
 openDB :: IO Connection
 openDB = do
