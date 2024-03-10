@@ -9,7 +9,11 @@ import Data.Text
 import Database.PostgreSQL.Simple
 import GHC.Generics (Generic)
 
-data NewPerson = NewPerson {name :: !Text, number :: !(Maybe Text)} deriving (Generic)
+data NewPerson = NewPerson
+  { name :: !Text
+  , number :: !(Maybe Text)
+  }
+  deriving (Generic)
 
 instance FromJSON NewPerson
 instance ToJSON NewPerson

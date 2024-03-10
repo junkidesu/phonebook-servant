@@ -1,6 +1,5 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
@@ -17,16 +16,23 @@ import Db.Operations
 import qualified Dto.EditPerson as EP
 import qualified Dto.NewPerson as NP
 import Servant
-import Servant.Docs
 import Servant.OpenApi (HasOpenApi (toOpenApi))
 import Servant.Swagger.UI (SwaggerSchemaUI, swaggerSchemaUIServer)
 
 type GetAllPersons = Summary "Get all persons in the app" :> Get '[JSON] [Person]
-type AddPerson = Summary "Add user to the app" :> ReqBody '[JSON] NP.NewPerson :> PostCreated '[JSON] Person
+type AddPerson =
+  Summary "Add user to the app"
+    :> ReqBody' '[Required, Description "Name and number of the person to add"] '[JSON] NP.NewPerson
+    :> PostCreated '[JSON] Person
 type GetPerson = Summary "Get person by ID" :> Get '[JSON] Person
 type DeletePerson = Summary "Remove the person with the given ID" :> DeleteNoContent
 type EditPerson = Summary "Edit a person with the given ID" :> ReqBody '[JSON] EP.EditPerson :> Put '[JSON] Person
-type PersonOperations = Capture' '[Description "ID of the person"] "id" Int :> (GetPerson :<|> DeletePerson :<|> EditPerson)
+type PersonOperations =
+  Capture' '[Description "ID of the person"] "id" Int
+    :> ( GetPerson
+          :<|> DeletePerson
+          :<|> EditPerson
+       )
 
 type PersonAPI =
   "persons"
@@ -34,19 +40,6 @@ type PersonAPI =
           :<|> AddPerson
           :<|> PersonOperations
        )
-
-instance ToCapture (Capture "id" Int) where
-  toCapture :: Proxy (Capture "id" Int) -> DocCapture
-  toCapture _ = DocCapture "x" "(integer) unique identification number of the person"
-
-instance ToSample Person where
-  toSamples _ = singleSample (Person 1 "John Doe" (Just "123-456-789"))
-
-instance ToSample NP.NewPerson where
-  toSamples _ = singleSample (NP.NewPerson "John Doe" (Just "123-456-789"))
-
-instance ToSample EP.EditPerson where
-  toSamples _ = singleSample (EP.EditPerson "John Doe" "123-456-789")
 
 type DocsAPI = PersonAPI :<|> SwaggerSchemaUI "swagger-ui" "swagger.json"
 
