@@ -52,6 +52,7 @@ library
     , text
     , utf8-string
     , wai
+    , wai-logger
     , warp
   default-language: Haskell2010
 
@@ -78,6 +79,7 @@ executable phonebook-exe
     , text
     , utf8-string
     , wai
+    , wai-logger
     , warp
   default-language: Haskell2010
 
@@ -108,5 +110,6 @@ test-suite phonebook-test
     , text
     , utf8-string
     , wai
+    , wai-logger
     , warp
   default-language: Haskell2010

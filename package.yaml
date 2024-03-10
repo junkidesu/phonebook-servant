@@ -28,6 +28,7 @@ dependencies:
 - postgresql-simple
 - servant-server
 - wai
+- wai-logger
 - warp
 - http-types
 - servant-openapi3
