@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       Api
+      Api.Persons
       Db.Model
       Db.Operations
       Db.Queries
