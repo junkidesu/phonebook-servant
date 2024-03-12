@@ -10,11 +10,11 @@ module Api.Persons (PersonsAPI, personsServer) where
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Data.Pool (Pool)
 import Database.PostgreSQL.Simple
-import Db.Model.Person
 import Db.Operations
-import qualified Dto.EditPerson as EP
-import qualified Dto.NewPerson as NP
 import Servant
+import qualified Types.EditPerson as EP
+import qualified Types.NewPerson as NP
+import Types.Person
 
 type GetAllPersons = Summary "Get all persons in the app" :> Get '[JSON] [Person]
 type AddPerson =
@@ -25,6 +25,7 @@ type AddPerson =
 type GetPerson = Summary "Get person by ID" :> Get '[JSON] Person
 type DeletePerson = Summary "Remove the person with the given ID" :> DeleteNoContent
 type EditPerson = Summary "Edit a person with the given ID" :> ReqBody '[JSON] EP.EditPerson :> Put '[JSON] Person
+
 type PersonOperations =
   Capture' '[Description "ID of the person"] "id" Int
     :> ( GetPerson

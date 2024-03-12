@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# OPTIONS_GHC -Wno-missing-export-lists #-}
 
-module Dto.NewPerson where
+module Types.EditPerson where
 
 import Data.Aeson
 import Data.OpenApi
@@ -9,13 +9,13 @@ import Data.Text
 import Database.PostgreSQL.Simple
 import GHC.Generics (Generic)
 
-data NewPerson = NewPerson
+data EditPerson = EditPerson
   { name :: !Text
-  , number :: !(Maybe Text)
+  , number :: !Text
   }
   deriving (Generic)
 
-instance FromJSON NewPerson
-instance ToJSON NewPerson
-instance ToRow NewPerson
-instance ToSchema NewPerson
+instance FromJSON EditPerson
+instance ToJSON EditPerson
+instance ToRow EditPerson
+instance ToSchema EditPerson

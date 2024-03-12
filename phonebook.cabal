@@ -29,14 +29,15 @@ library
       Api.Persons
       Api.Users
       Db
-      Db.Model.Person
-      Db.Model.User
       Db.Operations
       Db.Queries
-      Dto.EditPerson
-      Dto.NewPerson
-      Dto.NewUser
       Lib
+      Types.AuthUser
+      Types.EditPerson
+      Types.NewPerson
+      Types.NewUser
+      Types.Person
+      Types.User
       Util.Error
   other-modules:
       Paths_phonebook
@@ -56,6 +57,8 @@ library
     , postgresql-simple
     , resource-pool
     , servant
+    , servant-auth
+    , servant-auth-server
     , servant-openapi3
     , servant-server
     , servant-swagger-ui
@@ -88,6 +91,8 @@ executable phonebook-exe
     , postgresql-simple
     , resource-pool
     , servant
+    , servant-auth
+    , servant-auth-server
     , servant-openapi3
     , servant-server
     , servant-swagger-ui
@@ -124,6 +129,8 @@ test-suite phonebook-test
     , postgresql-simple
     , resource-pool
     , servant
+    , servant-auth
+    , servant-auth-server
     , servant-openapi3
     , servant-server
     , servant-swagger-ui

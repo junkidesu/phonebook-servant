@@ -11,10 +11,10 @@ import Control.Monad.IO.Class (MonadIO (liftIO))
 import Data.Pool (Pool)
 import qualified Data.Text as T
 import Database.PostgreSQL.Simple
-import Db.Model.User
 import Db.Operations
-import qualified Dto.NewUser as NU
 import Servant
+import qualified Types.NewUser as NU
+import Types.User
 
 type GetAllUsers = Summary "Get all users" :> Get '[JSON] [User]
 type CreateUser =

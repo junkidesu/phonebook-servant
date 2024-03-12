@@ -5,12 +5,12 @@ module Db.Operations where
 import Data.Password.Bcrypt
 import Data.Pool (Pool, withResource)
 import Database.PostgreSQL.Simple
-import Db.Model.Person (Person)
-import Db.Model.User (User)
 import Db.Queries
-import qualified Dto.EditPerson as EP
-import qualified Dto.NewPerson as NP
-import qualified Dto.NewUser as NU
+import qualified Types.EditPerson as EP
+import qualified Types.NewPerson as NP
+import qualified Types.NewUser as NU
+import Types.Person (Person)
+import Types.User (User)
 
 insertUser :: Pool Connection -> NU.NewUser -> IO User
 insertUser conns nu = do
@@ -21,19 +21,23 @@ insertUser conns nu = do
   return user
 
 allUsers :: Pool Connection -> IO [User]
-allUsers conns = withResource conns $ \conn -> query_ conn allUsersQ
+allUsers conns = withResource conns $
+  \conn -> query_ conn allUsersQ
 
 deleteUser :: Pool Connection -> Int -> IO ()
 deleteUser conns userId = do
-  _ <- withResource conns $ \conn -> execute conn deleteUserQ (Only userId)
+  _ <- withResource conns $
+    \conn -> execute conn deleteUserQ (Only userId)
   return ()
 
 peopleInDB :: Pool Connection -> IO [Person]
-peopleInDB conns = withResource conns $ \conn -> query_ conn allPersonsQ
+peopleInDB conns = withResource conns $
+  \conn -> query_ conn allPersonsQ
 
 personById :: Pool Connection -> Int -> IO (Maybe Person)
 personById conns personId = do
-  people <- withResource conns $ \conn -> query conn personByIdQ (Only personId) :: IO [Person]
+  people <- withResource conns $
+    \conn -> query conn personByIdQ (Only personId) :: IO [Person]
 
   case people of
     [] -> return Nothing
@@ -41,12 +45,14 @@ personById conns personId = do
 
 insertPerson :: Pool Connection -> Int -> NP.NewPerson -> IO Person
 insertPerson conns userId np = do
-  [person] <- withResource conns $ \conn -> query conn insertPersonQ (NP.name np, NP.number np, userId)
+  [person] <- withResource conns $
+    \conn -> query conn insertPersonQ (NP.name np, NP.number np, userId)
   return person
 
 updateNumberInDB :: Pool Connection -> Int -> EP.EditPerson -> IO (Maybe Person)
 updateNumberInDB conns personId up = do
-  _ <- withResource conns $ \conn -> execute conn updateNumberQ (EP.name up, EP.number up, personId)
+  _ <- withResource conns $
+    \conn -> execute conn updateNumberQ (EP.name up, EP.number up, personId)
   personById conns personId
 
 deletePersonFromDB :: Pool Connection -> Int -> IO ()

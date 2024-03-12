@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Dto.NewUser (NewUser (..)) where
+module Types.NewUser (NewUser (..)) where
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.OpenApi (ToSchema)

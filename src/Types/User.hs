@@ -3,7 +3,7 @@
 {-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Db.Model.User (User (User)) where
+module Types.User (User (User)) where
 
 import Control.Lens hiding ((.=))
 import Data.Aeson

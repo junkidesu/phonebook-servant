@@ -33,7 +33,12 @@ deletePersonQ :: Query
 deletePersonQ = "DELETE FROM persons WHERE id = ?"
 
 updateNumberQ :: Query
-updateNumberQ = "UPDATE persons SET name = ?, number = ? WHERE id = ? RETURNING id, name, number"
+updateNumberQ =
+  "WITH updated_person AS ("
+    <> "UPDATE persons SET name = ?, number = ? WHERE id = ? "
+    <> "RETURNING *)"
+    <> "SELECT up.id, up.name, up.number, u.id, u.username, u.passwordHash FROM updated_person up "
+    <> "JOIN users u ON up.author = u.id"
 
 personByIdQ :: Query
 personByIdQ = "SELECT * FROM persons WHERE id = ?"
