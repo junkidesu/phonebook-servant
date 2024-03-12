@@ -8,6 +8,7 @@
 module Api.Users (UsersAPI, usersServer) where
 
 import Control.Monad.IO.Class (MonadIO (liftIO))
+import Data.Pool (Pool)
 import qualified Data.Text as T
 import Database.PostgreSQL.Simple
 import Db.Model.User
@@ -30,19 +31,19 @@ type DeleteUser =
 
 type UsersAPI = "users" :> (GetAllUsers :<|> CreateUser :<|> DeleteUser)
 
-usersServer :: Connection -> Server UsersAPI
-usersServer conn = getAllUsers :<|> createUser :<|> removeUser
+usersServer :: Pool Connection -> Server UsersAPI
+usersServer conns = getAllUsers :<|> createUser :<|> removeUser
  where
   getAllUsers :: Handler [User]
-  getAllUsers = liftIO $ allUsers conn
+  getAllUsers = liftIO $ allUsers conns
 
   createUser :: NU.NewUser -> Handler User
   createUser nu =
     if T.null (NU.password nu)
       then throwError err400{errBody = "Empty password!"}
-      else liftIO $ insertUser conn nu
+      else liftIO $ insertUser conns nu
 
   removeUser :: Int -> Handler NoContent
   removeUser userId = do
-    liftIO $ deleteUser conn userId
+    liftIO $ deleteUser conns userId
     return NoContent

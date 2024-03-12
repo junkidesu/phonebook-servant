@@ -7,8 +7,9 @@ module Lib (
 where
 
 import Api
+import Data.Pool (Pool)
 import Database.PostgreSQL.Simple
-import Db.Operations
+import Db
 import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.Wai.Logger (withStdoutLogger)
@@ -16,13 +17,13 @@ import Servant
 
 startApp :: IO ()
 startApp = do
-  conn <- connectToDb
+  conns <- connectToDb
 
   withStdoutLogger $ \aplogger -> do
     let settings = setPort 8080 $ setLogger aplogger defaultSettings
-    runSettings settings (app conn)
+    runSettings settings (app conns)
 
-app :: Connection -> Application
+app :: Pool Connection -> Application
 app = serve api . server
 
 api :: Proxy DocsAPI

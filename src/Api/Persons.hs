@@ -8,6 +8,7 @@
 module Api.Persons (PersonsAPI, personsServer) where
 
 import Control.Monad.IO.Class (MonadIO (liftIO))
+import Data.Pool (Pool)
 import Database.PostgreSQL.Simple
 import Db.Model.Person
 import Db.Operations
@@ -38,24 +39,24 @@ type PersonsAPI =
           :<|> PersonOperations
        )
 
-personsServer :: Connection -> Server PersonsAPI
-personsServer conn =
+personsServer :: Pool Connection -> Server PersonsAPI
+personsServer conns =
   getAllPersons
     :<|> createPerson
     :<|> personOperations
  where
   getAllPersons :: Handler [Person]
-  getAllPersons = liftIO . peopleInDB $ conn
+  getAllPersons = liftIO . peopleInDB $ conns
 
   createPerson :: Int -> NP.NewPerson -> Handler Person
   createPerson userId np = do
-    liftIO $ insertPerson conn userId np
+    liftIO $ insertPerson conns userId np
 
   personOperations personId = getPerson :<|> deletePerson :<|> editPerson
    where
     getPerson :: Handler Person
     getPerson = do
-      person <- liftIO $ personById conn personId
+      person <- liftIO $ personById conns personId
 
       case person of
         Nothing -> throwError err404{errBody = "Person not found :("}
@@ -63,12 +64,12 @@ personsServer conn =
 
     deletePerson :: Handler NoContent
     deletePerson = do
-      liftIO $ deletePersonFromDB conn personId
+      liftIO $ deletePersonFromDB conns personId
       return NoContent
 
     editPerson :: EP.EditPerson -> Handler Person
     editPerson up = do
-      res <- liftIO . updateNumberInDB conn personId $ up
+      res <- liftIO . updateNumberInDB conns personId $ up
 
       case res of
         Nothing -> throwError err404{errBody = "Person not found :("}

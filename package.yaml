@@ -28,6 +28,7 @@ dependencies:
 - bytestring
 - utf8-string
 - postgresql-simple
+- resource-pool
 - servant-server
 - wai
 - wai-logger

@@ -16,7 +16,7 @@ deleteUserQ = "DELETE FROM users WHERE id = ?"
 
 allPersonsQ :: Query
 allPersonsQ =
-  "SELECT p.id, p.name, p.number, u.id, u.username, u.password FROM persons p "
+  "SELECT p.id, p.name, p.number, u.id, u.username, u.passwordHash FROM persons p "
     <> "JOIN users u "
     <> "ON p.author = u.id"
 
@@ -26,7 +26,7 @@ insertPersonQ =
     <> "INSERT INTO persons (name, number, author) VALUES (?, ?, ?) "
     <> "RETURNING *"
     <> ") "
-    <> "SELECT ip.id, ip.name, ip.number, u.id, u.username, u.password FROM inserted_person ip "
+    <> "SELECT ip.id, ip.name, ip.number, u.id, u.username, u.passwordHash FROM inserted_person ip "
     <> "JOIN users u ON ip.author = u.id"
 
 deletePersonQ :: Query

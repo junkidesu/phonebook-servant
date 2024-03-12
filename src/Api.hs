@@ -12,6 +12,7 @@ import Api.Persons (PersonsAPI, personsServer)
 import Api.Users (UsersAPI, usersServer)
 import Control.Lens
 import Data.OpenApi hiding (Server)
+import Data.Pool (Pool)
 import Database.PostgreSQL.Simple
 import Servant
 import Servant.OpenApi (HasOpenApi (toOpenApi), subOperations)
@@ -38,9 +39,9 @@ openapiDoc =
     & applyTagsFor usersOpts ["users" & description ?~ "Operations on users"]
     & applyTagsFor personsOpts ["persons" & description ?~ "Operations on persons"]
 
-server :: Connection -> Server DocsAPI
-server conn =
-  ( usersServer conn
-      :<|> personsServer conn
+server :: Pool Connection -> Server DocsAPI
+server conns =
+  ( usersServer conns
+      :<|> personsServer conns
   )
     :<|> swaggerSchemaUIServer openapiDoc
