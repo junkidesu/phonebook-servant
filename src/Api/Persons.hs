@@ -7,10 +7,9 @@
 
 module Api.Persons (PersonsAPI, personsServer) where
 
-import Control.Exception (try)
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Database.PostgreSQL.Simple
-import Db.Model
+import Db.Model.Person
 import Db.Operations
 import qualified Dto.EditPerson as EP
 import qualified Dto.NewPerson as NP
@@ -19,6 +18,7 @@ import Servant
 type GetAllPersons = Summary "Get all persons in the app" :> Get '[JSON] [Person]
 type AddPerson =
   Summary "Add user to the app"
+    :> Capture "userId" Int
     :> ReqBody' '[Required, Description "Name and number of the person to add"] '[JSON] NP.NewPerson
     :> PostCreated '[JSON] Person
 type GetPerson = Summary "Get person by ID" :> Get '[JSON] Person
@@ -41,19 +41,15 @@ type PersonsAPI =
 personsServer :: Connection -> Server PersonsAPI
 personsServer conn =
   getAllPersons
-    :<|> addPerson
+    :<|> createPerson
     :<|> personOperations
  where
   getAllPersons :: Handler [Person]
   getAllPersons = liftIO . peopleInDB $ conn
 
-  addPerson :: NP.NewPerson -> Handler Person
-  addPerson np = do
-    res <- liftIO (try (insertPersonInDB conn np) :: IO (Either SqlError Person))
-
-    case res of
-      Left _ -> throwError err400{errBody = "Couldn't add new person :("}
-      Right p -> return p
+  createPerson :: Int -> NP.NewPerson -> Handler Person
+  createPerson userId np = do
+    liftIO $ insertPerson conn userId np
 
   personOperations personId = getPerson :<|> deletePerson :<|> editPerson
    where

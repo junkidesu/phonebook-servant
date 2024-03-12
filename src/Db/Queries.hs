@@ -5,27 +5,38 @@ module Db.Queries where
 
 import Database.PostgreSQL.Simple
 
-initDBQuery :: Query
-initDBQuery =
-  "CREATE TABLE IF NOT EXISTS persons ("
-    <> "id SERIAL PRIMARY KEY,"
-    <> "name TEXT NOT NULL UNIQUE,"
-    <> "number TEXT)"
+allUsersQ :: Query
+allUsersQ = "SELECT * FROM users"
 
-allPersonsQuery :: Query
-allPersonsQuery = "SELECT * FROM persons"
+insertUserQ :: Query
+insertUserQ = "INSERT INTO users (username, passwordHash) VALUES (?, ?) RETURNING id, username, passwordHash"
 
-insertPersonQuery :: Query
-insertPersonQuery = "INSERT INTO persons (name, number) VALUES (?, ?) RETURNING id, name, number"
+deleteUserQ :: Query
+deleteUserQ = "DELETE FROM users WHERE id = ?"
 
-deletePersonQuery :: Query
-deletePersonQuery = "DELETE FROM persons WHERE id = ?"
+allPersonsQ :: Query
+allPersonsQ =
+  "SELECT p.id, p.name, p.number, u.id, u.username, u.password FROM persons p "
+    <> "JOIN users u "
+    <> "ON p.author = u.id"
 
-updateNumberQuery :: Query
-updateNumberQuery = "UPDATE persons SET name = ?, number = ? WHERE id = ?"
+insertPersonQ :: Query
+insertPersonQ =
+  "WITH inserted_person AS ("
+    <> "INSERT INTO persons (name, number, author) VALUES (?, ?, ?) "
+    <> "RETURNING *"
+    <> ") "
+    <> "SELECT ip.id, ip.name, ip.number, u.id, u.username, u.password FROM inserted_person ip "
+    <> "JOIN users u ON ip.author = u.id"
 
-personByIdQuery :: Query
-personByIdQuery = "SELECT * FROM persons WHERE id = ?"
+deletePersonQ :: Query
+deletePersonQ = "DELETE FROM persons WHERE id = ?"
 
-personByNameQuery :: Query
-personByNameQuery = "SELECT * FROM persons WHERE name = ?"
+updateNumberQ :: Query
+updateNumberQ = "UPDATE persons SET name = ?, number = ? WHERE id = ? RETURNING id, name, number"
+
+personByIdQ :: Query
+personByIdQ = "SELECT * FROM persons WHERE id = ?"
+
+personByNameQ :: Query
+personByNameQ = "SELECT * FROM persons WHERE name = ?"

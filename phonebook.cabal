@@ -27,11 +27,14 @@ library
   exposed-modules:
       Api
       Api.Persons
-      Db.Model
+      Api.Users
+      Db.Model.Person
+      Db.Model.User
       Db.Operations
       Db.Queries
       Dto.EditPerson
       Dto.NewPerson
+      Dto.NewUser
       Lib
   other-modules:
       Paths_phonebook
@@ -45,7 +48,9 @@ library
     , base >=4.7 && <5
     , bytestring
     , http-types
+    , lens
     , openapi3
+    , password
     , postgresql-simple
     , servant-openapi3
     , servant-server
@@ -71,7 +76,9 @@ executable phonebook-exe
     , base
     , bytestring
     , http-types
+    , lens
     , openapi3
+    , password
     , phonebook
     , postgresql-simple
     , servant-openapi3
@@ -102,7 +109,9 @@ test-suite phonebook-test
     , hspec-wai
     , hspec-wai-json
     , http-types
+    , lens
     , openapi3
+    , password
     , phonebook
     , postgresql-simple
     , servant-openapi3
