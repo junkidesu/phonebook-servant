@@ -37,6 +37,7 @@ library
       Dto.NewPerson
       Dto.NewUser
       Lib
+      Util.Error
   other-modules:
       Paths_phonebook
   autogen-modules:
@@ -54,9 +55,11 @@ library
     , password
     , postgresql-simple
     , resource-pool
+    , servant
     , servant-openapi3
     , servant-server
     , servant-swagger-ui
+    , string-conversions
     , text
     , utf8-string
     , wai
@@ -84,9 +87,11 @@ executable phonebook-exe
     , phonebook
     , postgresql-simple
     , resource-pool
+    , servant
     , servant-openapi3
     , servant-server
     , servant-swagger-ui
+    , string-conversions
     , text
     , utf8-string
     , wai
@@ -118,9 +123,11 @@ test-suite phonebook-test
     , phonebook
     , postgresql-simple
     , resource-pool
+    , servant
     , servant-openapi3
     , servant-server
     , servant-swagger-ui
+    , string-conversions
     , text
     , utf8-string
     , wai

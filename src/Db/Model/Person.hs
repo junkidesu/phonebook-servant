@@ -13,7 +13,7 @@ import GHC.Generics (Generic)
 data Person = Person
   { id :: !Int
   , name :: !Text
-  , number :: !(Maybe Text)
+  , number :: !Text
   , author :: !User
   }
   deriving (Show, Eq, Generic)

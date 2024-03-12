@@ -29,7 +29,9 @@ dependencies:
 - utf8-string
 - postgresql-simple
 - resource-pool
+- servant
 - servant-server
+- string-conversions
 - wai
 - wai-logger
 - warp
