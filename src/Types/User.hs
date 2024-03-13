@@ -3,12 +3,12 @@
 {-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Types.User (User (User)) where
+module Types.User (User (..)) where
 
 import Control.Lens hiding ((.=))
 import Data.Aeson
 import Data.Data
-import Data.OpenApi
+import Data.Swagger
 import Data.Text (Text)
 import Database.PostgreSQL.Simple
 import GHC.Generics (Generic)
@@ -34,6 +34,6 @@ instance ToSchema User where
     return $
       NamedSchema (Just "User") $
         mempty
-          & type_ ?~ OpenApiObject
+          & type_ ?~ SwaggerObject
           & properties .~ [("id", intSchema), ("username", textSchema)]
           & required .~ ["id", "username"]

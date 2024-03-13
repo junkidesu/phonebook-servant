@@ -32,15 +32,16 @@ dependencies:
 - servant
 - servant-server
 - servant-auth
+- servant-auth-swagger
 - servant-auth-server
 - string-conversions
 - wai
 - wai-logger
 - warp
 - http-types
-- servant-openapi3
+- servant-swagger
 - servant-swagger-ui
-- openapi3
+- swagger2
 
 ghc-options:
 - -Wall

@@ -3,7 +3,7 @@
 module Types.Person (Person (Person)) where
 
 import Data.Aeson
-import Data.OpenApi (ToSchema)
+import Data.Swagger (ToSchema)
 import Data.Text
 import Database.PostgreSQL.Simple
 import Database.PostgreSQL.Simple.FromRow

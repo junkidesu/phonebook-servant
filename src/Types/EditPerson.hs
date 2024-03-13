@@ -4,7 +4,7 @@
 module Types.EditPerson where
 
 import Data.Aeson
-import Data.OpenApi
+import Data.Swagger
 import Data.Text
 import Database.PostgreSQL.Simple
 import GHC.Generics (Generic)

@@ -2,30 +2,30 @@
 
 module Lib (
   startApp,
-  app,
 )
 where
 
 import Api
-import Data.Pool (Pool)
-import Database.PostgreSQL.Simple hiding ((:.))
 import Db
-import Network.Wai
 import Network.Wai.Handler.Warp
 import Network.Wai.Logger (withStdoutLogger)
 import Servant
+import Servant.Auth.Server (defaultCookieSettings, defaultJWTSettings, generateKey)
 import Util.Error (customFormatters)
 
 startApp :: IO ()
 startApp = do
   conns <- connectToDb
 
+  myKey <- generateKey
+
+  let
+    jwtCfg = defaultJWTSettings myKey
+    cfg = defaultCookieSettings :. jwtCfg :. customFormatters :. EmptyContext
+    app = serveWithContext api cfg (server conns jwtCfg)
   withStdoutLogger $ \aplogger -> do
     let settings = setPort 8080 $ setLogger aplogger defaultSettings
-    runSettings settings (app conns)
-
-app :: Pool Connection -> Application
-app = serveWithContext api (customFormatters :. EmptyContext) . server
+    runSettings settings app
 
 api :: Proxy DocsAPI
 api = Proxy

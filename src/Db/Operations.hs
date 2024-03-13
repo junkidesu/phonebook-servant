@@ -4,6 +4,7 @@ module Db.Operations where
 
 import Data.Password.Bcrypt
 import Data.Pool (Pool, withResource)
+import Data.Text (Text)
 import Database.PostgreSQL.Simple
 import Db.Queries
 import qualified Types.EditPerson as EP
@@ -23,6 +24,15 @@ insertUser conns nu = do
 allUsers :: Pool Connection -> IO [User]
 allUsers conns = withResource conns $
   \conn -> query_ conn allUsersQ
+
+userByUsername :: Pool Connection -> Text -> IO (Maybe User)
+userByUsername conns username = do
+  withResource conns $
+    \conn -> do
+      res <- query conn userByUsernameQ (Only username) :: IO [User]
+      case res of
+        [] -> return Nothing
+        (user : _) -> return $ Just user
 
 deleteUser :: Pool Connection -> Int -> IO ()
 deleteUser conns userId = do

@@ -26,14 +26,18 @@ source-repository head
 library
   exposed-modules:
       Api
+      Api.Auth
       Api.Persons
       Api.Users
+      Auth
       Db
       Db.Operations
       Db.Queries
       Lib
       Types.AuthUser
+      Types.Credentials
       Types.EditPerson
+      Types.LoginResponse
       Types.NewPerson
       Types.NewUser
       Types.Person
@@ -52,17 +56,18 @@ library
     , bytestring
     , http-types
     , lens
-    , openapi3
     , password
     , postgresql-simple
     , resource-pool
     , servant
     , servant-auth
     , servant-auth-server
-    , servant-openapi3
+    , servant-auth-swagger
     , servant-server
+    , servant-swagger
     , servant-swagger-ui
     , string-conversions
+    , swagger2
     , text
     , utf8-string
     , wai
@@ -85,7 +90,6 @@ executable phonebook-exe
     , bytestring
     , http-types
     , lens
-    , openapi3
     , password
     , phonebook
     , postgresql-simple
@@ -93,10 +97,12 @@ executable phonebook-exe
     , servant
     , servant-auth
     , servant-auth-server
-    , servant-openapi3
+    , servant-auth-swagger
     , servant-server
+    , servant-swagger
     , servant-swagger-ui
     , string-conversions
+    , swagger2
     , text
     , utf8-string
     , wai
@@ -123,7 +129,6 @@ test-suite phonebook-test
     , hspec-wai-json
     , http-types
     , lens
-    , openapi3
     , password
     , phonebook
     , postgresql-simple
@@ -131,10 +136,12 @@ test-suite phonebook-test
     , servant
     , servant-auth
     , servant-auth-server
-    , servant-openapi3
+    , servant-auth-swagger
     , servant-server
+    , servant-swagger
     , servant-swagger-ui
     , string-conversions
+    , swagger2
     , text
     , utf8-string
     , wai

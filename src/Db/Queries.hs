@@ -8,6 +8,9 @@ import Database.PostgreSQL.Simple
 allUsersQ :: Query
 allUsersQ = "SELECT * FROM users"
 
+userByUsernameQ :: Query
+userByUsernameQ = "SELECT * FROM users WHERE username = ?"
+
 insertUserQ :: Query
 insertUserQ = "INSERT INTO users (username, passwordHash) VALUES (?, ?) RETURNING id, username, passwordHash"
 

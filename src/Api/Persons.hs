@@ -1,5 +1,4 @@
 {-# LANGUAGE DataKinds #-}
-{-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
@@ -12,14 +11,19 @@ import Data.Pool (Pool)
 import Database.PostgreSQL.Simple
 import Db.Operations
 import Servant
+import Servant.Auth (Auth, JWT)
+import Servant.Auth.Server (AuthResult (Authenticated))
+import Types.AuthUser
 import qualified Types.EditPerson as EP
 import qualified Types.NewPerson as NP
 import Types.Person
 
+type JWTAuth = Auth '[JWT] AuthUser
+
 type GetAllPersons = Summary "Get all persons in the app" :> Get '[JSON] [Person]
 type AddPerson =
   Summary "Add user to the app"
-    :> Capture "userId" Int
+    :> JWTAuth
     :> ReqBody' '[Required, Description "Name and number of the person to add"] '[JSON] NP.NewPerson
     :> PostCreated '[JSON] Person
 type GetPerson = Summary "Get person by ID" :> Get '[JSON] Person
@@ -49,9 +53,10 @@ personsServer conns =
   getAllPersons :: Handler [Person]
   getAllPersons = liftIO . peopleInDB $ conns
 
-  createPerson :: Int -> NP.NewPerson -> Handler Person
-  createPerson userId np = do
-    liftIO $ insertPerson conns userId np
+  createPerson :: AuthResult AuthUser -> NP.NewPerson -> Handler Person
+  createPerson (Authenticated au) np = do
+    liftIO $ insertPerson conns (userId au) np
+  createPerson _ _ = throwError err401{errBody = "Unauthenticated"}
 
   personOperations personId = getPerson :<|> deletePerson :<|> editPerson
    where
