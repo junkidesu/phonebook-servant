@@ -1,6 +1,6 @@
 {-# LANGUAGE DeriveGeneric #-}
 
-module Types.Person (Person (Person)) where
+module Types.Person (Person (..)) where
 
 import Data.Aeson
 import Data.Swagger (ToSchema)

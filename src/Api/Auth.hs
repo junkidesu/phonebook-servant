@@ -28,17 +28,30 @@ authServer conns jwtCfg = login
  where
   login :: C.Credentials -> Handler LoginResponse
   login credentials = do
-    mbUser <- liftIO $ userByUsername conns (C.username credentials)
+    mbUser <-
+      liftIO $
+        userByUsername
+          conns
+          (C.username credentials)
+
     case mbUser of
-      Nothing -> throwError err401{errBody = "Incorrect username or password"}
+      Nothing ->
+        throwError err401{errBody = "Incorrect username or password"}
       Just user -> do
         case checkPassword (mkPassword . C.password $ credentials) (PasswordHash $ U.passwordHash user) of
-          PasswordCheckFail -> throwError err401{errBody = "Incorrect username or password"}
+          PasswordCheckFail ->
+            throwError err401{errBody = "Incorrect username or password"}
           PasswordCheckSuccess -> do
-            tokenRes <- liftIO $ makeJWT (AuthUser (U.id user) (U.username user)) jwtCfg Nothing
+            tokenRes <-
+              liftIO $
+                makeJWT
+                  (AuthUser (U.id user) (U.username user))
+                  jwtCfg
+                  Nothing
 
             case tokenRes of
               Left _ -> throwError err401
               Right tokenBS -> do
                 let token = T.pack . BLU.toString $ tokenBS
-                return $ LoginResponse token (U.id user) (U.username user)
+                return $
+                  LoginResponse token (U.id user) (U.username user)

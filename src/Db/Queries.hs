@@ -44,7 +44,11 @@ updateNumberQ =
     <> "JOIN users u ON up.author = u.id"
 
 personByIdQ :: Query
-personByIdQ = "SELECT * FROM persons WHERE id = ?"
+personByIdQ =
+  "SELECT p.id, p.name, p.number, u.id, u.username, u.passwordHash FROM persons p "
+    <> "JOIN users u "
+    <> "ON p.author = u.id "
+    <> "WHERE p.id = ?"
 
 personByNameQ :: Query
 personByNameQ = "SELECT * FROM persons WHERE name = ?"

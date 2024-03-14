@@ -59,11 +59,11 @@ insertPerson conns userId np = do
     \conn -> query conn insertPersonQ (NP.name np, NP.number np, userId)
   return person
 
-updateNumberInDB :: Pool Connection -> Int -> EP.EditPerson -> IO (Maybe Person)
+updateNumberInDB :: Pool Connection -> Int -> EP.EditPerson -> IO Person
 updateNumberInDB conns personId up = do
-  _ <- withResource conns $
-    \conn -> execute conn updateNumberQ (EP.name up, EP.number up, personId)
-  personById conns personId
+  [person] <- withResource conns $
+    \conn -> query conn updateNumberQ (EP.name up, EP.number up, personId) :: IO [Person]
+  return person
 
 deletePersonFromDB :: Pool Connection -> Int -> IO ()
 deletePersonFromDB conns personId = do

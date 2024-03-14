@@ -13,24 +13,25 @@ import Db.Operations
 import Servant
 import Servant.Auth (Auth, JWT)
 import Servant.Auth.Server (AuthResult (Authenticated))
-import Types.AuthUser
+import qualified Types.AuthUser as AU
 import qualified Types.EditPerson as EP
 import qualified Types.NewPerson as NP
-import Types.Person
+import qualified Types.Person as P
+import qualified Types.User as U
 
-type JWTAuth = Auth '[JWT] AuthUser
+type JWTAuth = Auth '[JWT] AU.AuthUser
 
-type GetAllPersons = Summary "Get all persons in the app" :> Get '[JSON] [Person]
+type GetAllPersons = Summary "Get all persons in the app" :> Get '[JSON] [P.Person]
 type AddPerson =
   Summary "Add user to the app"
     :> JWTAuth
     :> ReqBody' '[Required, Description "Name and number of the person to add"] '[JSON] NP.NewPerson
-    :> PostCreated '[JSON] Person
+    :> PostCreated '[JSON] P.Person
 
 type GetPersonById =
   Summary "Get person by ID"
     :> Capture' '[Required, Description "ID of the person"] "id" Int
-    :> Get '[JSON] Person
+    :> Get '[JSON] P.Person
 
 type DeletePerson =
   Summary "Remove the person with the given ID"
@@ -43,7 +44,7 @@ type EditPerson =
     :> JWTAuth
     :> Capture' '[Required, Description "ID of the person"] "id" Int
     :> ReqBody '[JSON] EP.EditPerson
-    :> Put '[JSON] Person
+    :> Put '[JSON] P.Person
 
 type PersonsAPI =
   "persons"
@@ -54,6 +55,9 @@ type PersonsAPI =
           :<|> EditPerson
        )
 
+userIsAuthor :: AU.AuthUser -> P.Person -> Bool
+userIsAuthor au p = AU.id au == (U.id . P.author $ p)
+
 personsServer :: Pool Connection -> Server PersonsAPI
 personsServer conns =
   getAllPersons
@@ -62,15 +66,15 @@ personsServer conns =
     :<|> deletePerson
     :<|> editPerson
  where
-  getAllPersons :: Handler [Person]
+  getAllPersons :: Handler [P.Person]
   getAllPersons = liftIO . peopleInDB $ conns
 
-  createPerson :: AuthResult AuthUser -> NP.NewPerson -> Handler Person
+  createPerson :: AuthResult AU.AuthUser -> NP.NewPerson -> Handler P.Person
   createPerson (Authenticated au) np = do
-    liftIO $ insertPerson conns (userId au) np
+    liftIO $ insertPerson conns (AU.id au) np
   createPerson _ _ = throwError err401{errBody = "Unauthenticated"}
 
-  getPerson :: Int -> Handler Person
+  getPerson :: Int -> Handler P.Person
   getPerson personId = do
     person <- liftIO $ personById conns personId
 
@@ -78,17 +82,28 @@ personsServer conns =
       Nothing -> throwError err404{errBody = "Person not found :("}
       Just p -> return p
 
-  deletePerson :: AuthResult AuthUser -> Int -> Handler NoContent
+  deletePerson :: AuthResult AU.AuthUser -> Int -> Handler NoContent
   deletePerson (Authenticated au) personId = do
-    liftIO $ deletePersonFromDB conns personId
-    return NoContent
+    mbPerson <- liftIO $ personById conns personId
+
+    case mbPerson of
+      Nothing -> throwError err404
+      Just person -> do
+        if not $ userIsAuthor au person
+          then throwError err401
+          else do
+            liftIO (deletePersonFromDB conns personId)
+            return NoContent
   deletePerson _ _ = throwError err401
 
-  editPerson :: AuthResult AuthUser -> Int -> EP.EditPerson -> Handler Person
+  editPerson :: AuthResult AU.AuthUser -> Int -> EP.EditPerson -> Handler P.Person
   editPerson (Authenticated au) personId up = do
-    res <- liftIO . updateNumberInDB conns personId $ up
+    mbPerson <- liftIO . personById conns $ personId
 
-    case res of
-      Nothing -> throwError err404{errBody = "Person not found :("}
-      Just p -> return p
+    case mbPerson of
+      Nothing -> throwError err404
+      Just person -> do
+        if not $ userIsAuthor au person
+          then throwError err401
+          else liftIO $ updateNumberInDB conns personId up
   editPerson _ _ _ = throwError err401

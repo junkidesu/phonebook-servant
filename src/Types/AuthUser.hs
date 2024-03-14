@@ -9,7 +9,7 @@ import GHC.Generics
 import Servant.Auth.JWT (FromJWT, ToJWT)
 
 data AuthUser = AuthUser
-  { userId :: !Int
+  { id :: !Int
   , username :: !Text
   }
   deriving (Generic)
