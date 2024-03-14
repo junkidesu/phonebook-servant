@@ -29,7 +29,6 @@ library
       Api.Auth
       Api.Persons
       Api.Users
-      Auth
       Db
       Db.Operations
       Db.Queries

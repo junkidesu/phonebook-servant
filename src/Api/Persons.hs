@@ -26,29 +26,41 @@ type AddPerson =
     :> JWTAuth
     :> ReqBody' '[Required, Description "Name and number of the person to add"] '[JSON] NP.NewPerson
     :> PostCreated '[JSON] Person
-type GetPerson = Summary "Get person by ID" :> Get '[JSON] Person
-type DeletePerson = Summary "Remove the person with the given ID" :> DeleteNoContent
-type EditPerson = Summary "Edit a person with the given ID" :> ReqBody '[JSON] EP.EditPerson :> Put '[JSON] Person
 
-type PersonOperations =
-  Capture' '[Description "ID of the person"] "id" Int
-    :> ( GetPerson
-          :<|> DeletePerson
-          :<|> EditPerson
-       )
+type GetPersonById =
+  Summary "Get person by ID"
+    :> Capture' '[Required, Description "ID of the person"] "id" Int
+    :> Get '[JSON] Person
+
+type DeletePerson =
+  Summary "Remove the person with the given ID"
+    :> JWTAuth
+    :> Capture' '[Required, Description "ID of the person"] "id" Int
+    :> Verb 'DELETE 204 '[JSON] NoContent
+
+type EditPerson =
+  Summary "Edit a person with the given ID"
+    :> JWTAuth
+    :> Capture' '[Required, Description "ID of the person"] "id" Int
+    :> ReqBody '[JSON] EP.EditPerson
+    :> Put '[JSON] Person
 
 type PersonsAPI =
   "persons"
     :> ( GetAllPersons
           :<|> AddPerson
-          :<|> PersonOperations
+          :<|> GetPersonById
+          :<|> DeletePerson
+          :<|> EditPerson
        )
 
 personsServer :: Pool Connection -> Server PersonsAPI
 personsServer conns =
   getAllPersons
     :<|> createPerson
-    :<|> personOperations
+    :<|> getPerson
+    :<|> deletePerson
+    :<|> editPerson
  where
   getAllPersons :: Handler [Person]
   getAllPersons = liftIO . peopleInDB $ conns
@@ -58,25 +70,25 @@ personsServer conns =
     liftIO $ insertPerson conns (userId au) np
   createPerson _ _ = throwError err401{errBody = "Unauthenticated"}
 
-  personOperations personId = getPerson :<|> deletePerson :<|> editPerson
-   where
-    getPerson :: Handler Person
-    getPerson = do
-      person <- liftIO $ personById conns personId
+  getPerson :: Int -> Handler Person
+  getPerson personId = do
+    person <- liftIO $ personById conns personId
 
-      case person of
-        Nothing -> throwError err404{errBody = "Person not found :("}
-        Just p -> return p
+    case person of
+      Nothing -> throwError err404{errBody = "Person not found :("}
+      Just p -> return p
 
-    deletePerson :: Handler NoContent
-    deletePerson = do
-      liftIO $ deletePersonFromDB conns personId
-      return NoContent
+  deletePerson :: AuthResult AuthUser -> Int -> Handler NoContent
+  deletePerson (Authenticated au) personId = do
+    liftIO $ deletePersonFromDB conns personId
+    return NoContent
+  deletePerson _ _ = throwError err401
 
-    editPerson :: EP.EditPerson -> Handler Person
-    editPerson up = do
-      res <- liftIO . updateNumberInDB conns personId $ up
+  editPerson :: AuthResult AuthUser -> Int -> EP.EditPerson -> Handler Person
+  editPerson (Authenticated au) personId up = do
+    res <- liftIO . updateNumberInDB conns personId $ up
 
-      case res of
-        Nothing -> throwError err404{errBody = "Person not found :("}
-        Just p -> return p
+    case res of
+      Nothing -> throwError err404{errBody = "Person not found :("}
+      Just p -> return p
+  editPerson _ _ _ = throwError err401
