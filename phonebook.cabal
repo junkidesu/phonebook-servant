@@ -30,8 +30,10 @@ library
       Api.Persons
       Api.Users
       Db
-      Db.Operations
-      Db.Queries
+      Db.Operations.Persons
+      Db.Operations.Users
+      Db.Queries.Persons
+      Db.Queries.Users
       Lib
       Types.AuthUser
       Types.Credentials
@@ -41,7 +43,7 @@ library
       Types.NewUser
       Types.Person
       Types.User
-      Util.Error
+      Util.ErrorFormatters
   other-modules:
       Paths_phonebook
   autogen-modules:

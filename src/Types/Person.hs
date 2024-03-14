@@ -1,4 +1,5 @@
 {-# LANGUAGE DeriveGeneric #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module Types.Person (Person (..)) where
 
@@ -20,6 +21,7 @@ data Person = Person
 
 instance ToJSON Person
 instance FromRow Person where
+  fromRow :: RowParser Person
   fromRow =
     Person
       <$> field

@@ -11,7 +11,7 @@ import Network.Wai.Handler.Warp
 import Network.Wai.Logger (withStdoutLogger)
 import Servant
 import Servant.Auth.Server (defaultCookieSettings, defaultJWTSettings, generateKey)
-import Util.Error (customFormatters)
+import Util.ErrorFormatters (customFormatters)
 
 startApp :: IO ()
 startApp = do

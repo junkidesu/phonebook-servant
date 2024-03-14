@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Util.Error (customFormatters) where
+module Util.ErrorFormatters (customFormatters) where
 
 import Data.Aeson
 import Data.String.Conversions (cs)

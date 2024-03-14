@@ -9,7 +9,7 @@ module Api.Persons (PersonsAPI, personsServer) where
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Data.Pool (Pool)
 import Database.PostgreSQL.Simple
-import Db.Operations
+import Db.Operations.Persons
 import Servant
 import Servant.Auth (Auth, JWT)
 import Servant.Auth.Server (AuthResult (Authenticated))
@@ -54,9 +54,6 @@ type PersonsAPI =
           :<|> DeletePerson
           :<|> EditPerson
        )
-
-userIsAuthor :: AU.AuthUser -> P.Person -> Bool
-userIsAuthor au p = AU.id au == (U.id . P.author $ p)
 
 personsServer :: Pool Connection -> Server PersonsAPI
 personsServer conns =
@@ -107,3 +104,6 @@ personsServer conns =
           then throwError err401
           else liftIO $ updateNumberInDB conns personId up
   editPerson _ _ _ = throwError err401
+
+  userIsAuthor :: AU.AuthUser -> P.Person -> Bool
+  userIsAuthor au p = AU.id au == (U.id . P.author $ p)
