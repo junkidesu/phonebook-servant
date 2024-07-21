@@ -17,10 +17,10 @@ type Endpoint =
     :> ReqBody'
         '[Required, Description "The username and password of the person"]
         '[JSON]
-        Attributes.NewUser
+        Attributes.New
     :> PostCreated '[JSON] User
 
-handler :: Pool Connection -> Attributes.NewUser -> Handler User
+handler :: Pool Connection -> Attributes.New -> Handler User
 handler conns nu = do
   hashedPw <- liftIO . hashPassword . mkPassword $ Attributes.password nu
 

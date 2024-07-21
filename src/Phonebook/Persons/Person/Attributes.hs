@@ -3,24 +3,26 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Phonebook.Users.User.Attributes (Attributes (..), New) where
+module Phonebook.Persons.Person.Attributes where
+
+import Data.Text (Text)
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Functor.Identity (Identity)
 import Data.Swagger (ToSchema)
-import Data.Text (Text)
 import GHC.Generics (Generic)
-import Phonebook.Attribute (Attribute)
+import Phonebook.Attribute
 
 data Attributes f = Attributes
-  { username :: Attribute f Text
-  , password :: Attribute f Text
+  { name :: Attribute f Text
+  , number :: Attribute f Text
   }
   deriving (Generic)
 
 type New = Attributes Identity
+type Edit = Attributes Maybe
 
+deriving instance Show New
 deriving instance FromJSON New
 deriving instance ToJSON New
 deriving instance ToSchema New
-deriving instance Show New

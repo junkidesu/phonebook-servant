@@ -1,14 +1,21 @@
-module Phonebook.Persons.Database (allPersons, personById, toPersonType) where
+module Phonebook.Persons.Database (
+  allPersons,
+  personById,
+  createPerson,
+  toPersonType,
+) where
 
 import Data.Int (Int32)
 import Data.Pool (Pool, withResource)
 import Database.Beam
+import Database.Beam.Backend.SQL.BeamExtensions (MonadBeamInsertReturning (runInsertReturningList))
 import Database.Beam.Postgres (Connection, Postgres, runBeamPostgresDebug)
 import Phonebook.Database (PhonebookDb (phonebookPersons, phonebookUsers), db)
 import Phonebook.Persons.Database.Table
 import qualified Phonebook.Persons.Person as Person
+import qualified Phonebook.Persons.Person.Attributes as Attributes
 import Phonebook.Users.Database (toUserType)
-import Phonebook.Users.Database.Table (User, UserT)
+import Phonebook.Users.Database.Table (PrimaryKey (UserId), User, UserT)
 
 type PersonQuery s = Q Postgres PhonebookDb s (PersonT (QExpr Postgres s), UserT (QExpr Postgres s))
 
@@ -36,6 +43,26 @@ personById conns personId = withResource conns $ \conn ->
     runSelectReturningFirst $
       select $
         selectPersonById personId
+
+createPerson :: Pool Connection -> Attributes.New -> Int32 -> IO (Person, User)
+createPerson conns np userId =
+  withResource conns $ \conn -> do
+    runBeamPostgresDebug putStrLn conn $ do
+      [person] <-
+        runInsertReturningList $
+          insert (phonebookPersons db) $
+            insertExpressions
+              [ Person
+                  default_
+                  (val_ $ Attributes.name np)
+                  (val_ $ Attributes.number np)
+                  (val_ $ UserId userId)
+              ]
+      [user] <- runSelectReturningList $
+        select $ do
+          related_ (phonebookUsers db) (val_ $ _personUser person)
+
+      return (person, user)
 
 toPersonType :: (Person, User) -> Person.Person
 toPersonType (person, user) =

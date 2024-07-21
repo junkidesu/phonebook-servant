@@ -26,15 +26,6 @@ selectUserByUsername username =
     (\user -> _userUsername user ==. val_ username)
     selectAllUsers
 
-insertUser :: Attributes.NewUser -> SqlInsertValues Postgres (UserT (QExpr Postgres s))
-insertUser nu =
-  insertExpressions
-    [ User
-        default_
-        (val_ . Attributes.username $ nu)
-        (val_ . Attributes.password $ nu)
-    ]
-
 allUsers :: Pool Connection -> IO [User]
 allUsers conns = withResource conns $ \conn -> do
   runBeamPostgres conn $ runSelectReturningList $ select selectAllUsers
@@ -46,13 +37,18 @@ userByUsername conns username = withResource conns $ \conn -> do
       select $
         selectUserByUsername username
 
-createUser :: Pool Connection -> Attributes.NewUser -> IO User
+createUser :: Pool Connection -> Attributes.New -> IO User
 createUser conns nu = withResource conns $ \conn -> do
   [insertedUser] <-
     runBeamPostgres conn $
       runInsertReturningList $
         insert (phonebookUsers db) $
-          insertUser nu
+          insertExpressions
+            [ User
+                default_
+                (val_ . Attributes.username $ nu)
+                (val_ . Attributes.password $ nu)
+            ]
   return insertedUser
 
 deleteUser :: Pool Connection -> Int32 -> IO ()
