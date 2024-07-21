@@ -12,7 +12,14 @@ import qualified Phonebook.Users.Web.Register as Register
 import Servant
 import Servant.Auth.Server (JWTSettings)
 
-type API = "api" :> "users" :> (All.Endpoint :<|> Register.Endpoint :<|> Delete.Endpoint :<|> Login.Endpoint)
+type API =
+  "api"
+    :> "users"
+    :> ( All.Endpoint
+          :<|> Register.Endpoint
+          :<|> Delete.Endpoint
+          :<|> Login.Endpoint
+       )
 
 server :: Pool Connection -> JWTSettings -> Server API
 server conns jwts =

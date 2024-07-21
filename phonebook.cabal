@@ -35,6 +35,11 @@ library
       Db.Queries.Users
       Phonebook.Attribute
       Phonebook.Database
+      Phonebook.Persons.Database
+      Phonebook.Persons.Database.Table
+      Phonebook.Persons.Person
+      Phonebook.Persons.Web
+      Phonebook.Persons.Web.All
       Phonebook.Users.Database
       Phonebook.Users.Database.Table
       Phonebook.Users.User

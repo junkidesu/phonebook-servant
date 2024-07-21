@@ -2,18 +2,21 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Phonebook.Database (PhonebookDb (..), db, connectToDb) where
+module Phonebook.Database (PhonebookDb (..), db, connectToDb, resetDb) where
 
 import Configuration.Dotenv (defaultConfig, loadFile)
 import qualified Data.ByteString.UTF8 as BSU
 import Data.Pool (Pool, defaultPoolConfig, newPool, setNumStripes, withResource)
 import Database.Beam
+import Database.Beam.Backend.SQL.BeamExtensions (MonadBeamInsertReturning (runInsertReturningList))
 import Database.Beam.Postgres
+import Phonebook.Persons.Database.Table (PersonT (Person))
 import Phonebook.Users.Database.Table (UserT, users)
 import System.Environment (getEnv)
 
 data PhonebookDb f = PhonebookDb
   { phonebookUsers :: f (TableEntity UserT)
+  , phonebookPersons :: f (TableEntity PersonT)
   }
   deriving (Generic, Database be)
 
@@ -22,6 +25,7 @@ db =
   defaultDbSettings
     `withDbModification` dbModification
       { phonebookUsers = setEntityName "users"
+      , phonebookPersons = setEntityName "persons"
       }
 
 connectToDb :: IO (Pool Connection)
@@ -36,10 +40,21 @@ connectToDb = do
 
 resetDb :: Pool Connection -> IO ()
 resetDb conns = withResource conns $ \conn -> do
-  runBeamPostgres conn $ do
+  runBeamPostgresDebug putStrLn conn $ do
     deleteAllData
 
-    insertInitialUsers
+    [anwar, _, emily] <- insertInitialUsers
+
+    let
+      persons :: [PersonT (QExpr Postgres s)]
+      persons =
+        [ Person default_ (val_ "Junki") (val_ "12345678") (val_ $ pk anwar)
+        , Person default_ (val_ "Martina") (val_ "23456789") (val_ $ pk anwar)
+        , Person default_ (val_ "Weiwei") (val_ "34567890") (val_ $ pk emily)
+        ]
+    runInsert $
+      insert (phonebookPersons db) $
+        insertExpressions persons
  where
   deleteAllData =
     runDelete $
@@ -47,7 +62,7 @@ resetDb conns = withResource conns $ \conn -> do
         (phonebookUsers db)
         (const (val_ True))
   insertInitialUsers =
-    runInsert $
+    runInsertReturningList $
       insert (phonebookUsers db) $
         insertExpressions users
 
