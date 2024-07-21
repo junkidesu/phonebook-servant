@@ -25,14 +25,6 @@ source-repository head
 
 library
   exposed-modules:
-      Api
-      Api.Auth
-      Api.Persons
-      Api.Users
-      Db.Operations.Persons
-      Db.Operations.Users
-      Db.Queries.Persons
-      Db.Queries.Users
       Phonebook.Attribute
       Phonebook.Database
       Phonebook.Persons.Database
@@ -61,14 +53,6 @@ library
       Phonebook.Web.API
       Phonebook.Web.JWTAuth
       Phonebook.Web.Swagger
-      Types.AuthUser
-      Types.Credentials
-      Types.EditPerson
-      Types.LoginResponse
-      Types.NewPerson
-      Types.NewUser
-      Types.Person
-      Types.User
   other-modules:
       Paths_phonebook
   autogen-modules:
