@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Phonebook.Persons.Web.All where
+module Phonebook.Persons.Web.All (Endpoint, handler) where
 
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import Data.Pool (Pool)

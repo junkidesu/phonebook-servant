@@ -40,6 +40,7 @@ library
       Phonebook.Persons.Person
       Phonebook.Persons.Web
       Phonebook.Persons.Web.All
+      Phonebook.Persons.Web.Specific
       Phonebook.Users.Database
       Phonebook.Users.Database.Table
       Phonebook.Users.User
