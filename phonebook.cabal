@@ -41,6 +41,7 @@ library
       Phonebook.Users.User.Attributes
       Phonebook.Users.Web
       Phonebook.Users.Web.All
+      Phonebook.Users.Web.Delete
       Phonebook.Users.Web.Login
       Phonebook.Users.Web.Login.Credentials
       Phonebook.Users.Web.Login.Response
@@ -48,6 +49,7 @@ library
       Phonebook.Users.Web.Register
       Phonebook.Web
       Phonebook.Web.API
+      Phonebook.Web.JWTAuth
       Phonebook.Web.Swagger
       Types.AuthUser
       Types.Credentials
@@ -57,7 +59,6 @@ library
       Types.NewUser
       Types.Person
       Types.User
-      Util.ErrorFormatters
   other-modules:
       Paths_phonebook
   autogen-modules:

@@ -21,6 +21,7 @@ import Servant.Auth.Server (JWTSettings, makeJWT)
 
 type Endpoint =
   "login"
+    :> Summary "Login to the application"
     :> ReqBody '[JSON] Credentials.Credentials
     :> Post '[JSON] Response.Response
 

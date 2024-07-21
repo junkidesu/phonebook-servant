@@ -12,6 +12,7 @@ import qualified Phonebook.Web.API as API
 import qualified Phonebook.Web.Swagger as Swagger
 import Servant
 import Servant.Auth.Server (JWTSettings, defaultCookieSettings, defaultJWTSettings, generateKey)
+import Servant.Auth.Swagger ()
 
 type Phonebook = API.API :<|> Swagger.PhonebookSwagger
 

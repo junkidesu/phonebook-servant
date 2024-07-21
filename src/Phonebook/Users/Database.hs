@@ -2,9 +2,11 @@ module Phonebook.Users.Database (
   allUsers,
   userByUsername,
   createUser,
+  deleteUser,
   toUserType,
 ) where
 
+import Data.Int (Int32)
 import Data.Pool (Pool, withResource)
 import Data.Text (Text)
 import Database.Beam
@@ -52,6 +54,12 @@ createUser conns nu = withResource conns $ \conn -> do
         insert (phonebookUsers db) $
           insertUser nu
   return insertedUser
+
+deleteUser :: Pool Connection -> Int32 -> IO ()
+deleteUser conns userId = withResource conns $ \conn -> do
+  runBeamPostgres conn $
+    runDelete $
+      delete (phonebookUsers db) (\user -> pk user ==. val_ (UserId userId))
 
 toUserType :: User -> User.User
 toUserType = User.User <$> _userId <*> _userUsername <*> _userPassword

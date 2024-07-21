@@ -10,6 +10,7 @@ import Data.Swagger
 import qualified Phonebook.Users.Web as Users
 import Phonebook.Web.API hiding (server)
 import Servant (Server)
+import Servant.Auth.Swagger ()
 import Servant.Swagger
 import Servant.Swagger.UI
 
