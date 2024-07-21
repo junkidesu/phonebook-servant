@@ -1,7 +1,7 @@
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE TypeOperators #-}
 
-module Phonebook.Persons.Web.Delete where
+module Phonebook.Persons.Web.Delete (Endpoint, handler) where
 
 import Control.Monad (when)
 import Control.Monad.IO.Class (MonadIO (liftIO))

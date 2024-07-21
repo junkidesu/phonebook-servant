@@ -1,7 +1,7 @@
-POST http://localhost:8080/users
+POST http://localhost:8080/api/users
 Content-Type: application/json
 
 {
-    "username": "johndoe03",
-    "password": "strongpassword"
+    "username": "",
+    "password": ""
 }

@@ -3,7 +3,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneDeriving #-}
 
-module Phonebook.Persons.Person.Attributes where
+module Phonebook.Persons.Person.Attributes (Attributes (..), New, Edit) where
 
 import Data.Text (Text)
 
@@ -26,3 +26,8 @@ deriving instance Show New
 deriving instance FromJSON New
 deriving instance ToJSON New
 deriving instance ToSchema New
+
+deriving instance Show Edit
+deriving instance FromJSON Edit
+deriving instance ToJSON Edit
+deriving instance ToSchema Edit

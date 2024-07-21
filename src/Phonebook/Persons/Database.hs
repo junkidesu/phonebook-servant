@@ -3,13 +3,14 @@ module Phonebook.Persons.Database (
   personById,
   createPerson,
   deletePerson,
+  updatePerson,
   toPersonType,
 ) where
 
 import Data.Int (Int32)
 import Data.Pool (Pool, withResource)
 import Database.Beam
-import Database.Beam.Backend.SQL.BeamExtensions (MonadBeamInsertReturning (runInsertReturningList))
+import Database.Beam.Backend.SQL.BeamExtensions (MonadBeamInsertReturning (runInsertReturningList), MonadBeamUpdateReturning (runUpdateReturningList))
 import Database.Beam.Postgres (Connection, Postgres, runBeamPostgres, runBeamPostgresDebug)
 import Phonebook.Database (PhonebookDb (phonebookPersons, phonebookUsers), db)
 import Phonebook.Persons.Database.Table
@@ -70,7 +71,30 @@ deletePerson :: Pool Connection -> Int32 -> IO ()
 deletePerson conns userId = withResource conns $ \conn ->
   runBeamPostgres conn $
     runDelete $
-      delete (phonebookPersons db) (\person -> _personId person ==. (val_ userId))
+      delete (phonebookPersons db) (\person -> _personId person ==. val_ userId)
+
+updatePerson :: Pool Connection -> Int32 -> Attributes.Edit -> IO (Person, User)
+updatePerson conns personId ep =
+  withResource conns $ \conn -> do
+    runBeamPostgresDebug putStrLn conn $ do
+      [person] <-
+        runUpdateReturningList $
+          update
+            (phonebookPersons db)
+            ( \person ->
+                mconcat
+                  [ maybe mempty (\n -> _personName person <-. val_ n) (Attributes.name ep)
+                  , maybe mempty (\n -> _personNumber person <-. val_ n) (Attributes.number ep)
+                  ]
+            )
+            (\person -> _personId person ==. val_ personId)
+
+      [user] <-
+        runSelectReturningList $
+          select $
+            related_ (phonebookUsers db) (val_ $ _personUser person)
+
+      return (person, user)
 
 toPersonType :: (Person, User) -> Person.Person
 toPersonType (person, user) =

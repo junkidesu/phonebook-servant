@@ -2,16 +2,14 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Phonebook.Database (PhonebookDb (..), db, connectToDb, resetDb) where
+module Phonebook.Database (PhonebookDb (..), db, connectToDb) where
 
-import Configuration.Dotenv (defaultConfig, loadFile)
 import qualified Data.ByteString.UTF8 as BSU
-import Data.Pool (Pool, defaultPoolConfig, newPool, setNumStripes, withResource)
+import Data.Pool (Pool, defaultPoolConfig, newPool, setNumStripes)
 import Database.Beam
-import Database.Beam.Backend.SQL.BeamExtensions (MonadBeamInsertReturning (runInsertReturningList))
 import Database.Beam.Postgres
-import Phonebook.Persons.Database.Table (PersonT (Person))
-import Phonebook.Users.Database.Table (UserT, users)
+import Phonebook.Persons.Database.Table (PersonT)
+import Phonebook.Users.Database.Table (UserT)
 import System.Environment (getEnv)
 
 data PhonebookDb f = PhonebookDb
@@ -37,39 +35,3 @@ connectToDb = do
       close
       60
       10
-
-resetDb :: Pool Connection -> IO ()
-resetDb conns = withResource conns $ \conn -> do
-  runBeamPostgresDebug putStrLn conn $ do
-    deleteAllData
-
-    [anwar, _, emily] <- insertInitialUsers
-
-    let
-      persons :: [PersonT (QExpr Postgres s)]
-      persons =
-        [ Person default_ (val_ "Junki") (val_ "12345678") (val_ $ pk anwar)
-        , Person default_ (val_ "Martina") (val_ "23456789") (val_ $ pk anwar)
-        , Person default_ (val_ "Weiwei") (val_ "34567890") (val_ $ pk emily)
-        ]
-    runInsert $
-      insert (phonebookPersons db) $
-        insertExpressions persons
- where
-  deleteAllData =
-    runDelete $
-      delete
-        (phonebookUsers db)
-        (const (val_ True))
-  insertInitialUsers =
-    runInsertReturningList $
-      insert (phonebookUsers db) $
-        insertExpressions users
-
-foo :: IO ()
-foo = do
-  loadFile defaultConfig
-
-  conns <- connectToDb
-
-  resetDb conns

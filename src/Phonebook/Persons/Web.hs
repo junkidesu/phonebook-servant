@@ -9,6 +9,7 @@ import qualified Phonebook.Persons.Web.All as All
 import qualified Phonebook.Persons.Web.Create as Create
 import qualified Phonebook.Persons.Web.Delete as Delete
 import qualified Phonebook.Persons.Web.Specific as Specific
+import qualified Phonebook.Persons.Web.Update as Update
 import Servant
 
 type API =
@@ -18,6 +19,7 @@ type API =
           :<|> Specific.Endpoint
           :<|> Create.Endpoint
           :<|> Delete.Endpoint
+          :<|> Update.Endpoint
        )
 
 server :: Pool Connection -> Server API
@@ -26,3 +28,4 @@ server conns =
     :<|> Specific.handler conns
     :<|> Create.handler conns
     :<|> Delete.handler conns
+    :<|> Update.handler conns

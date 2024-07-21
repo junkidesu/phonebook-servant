@@ -1,6 +1,6 @@
 {-# LANGUAGE DataKinds #-}
 
-module Phonebook.Web.JWTAuth where
+module Phonebook.Web.JWTAuth (JWTAuth) where
 
 import qualified Phonebook.Users.Web.Login.User as Login
 import Servant.Auth
