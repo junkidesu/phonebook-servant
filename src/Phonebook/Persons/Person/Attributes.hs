@@ -9,7 +9,7 @@ import Data.Text (Text)
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Functor.Identity (Identity)
-import Data.Swagger (ToSchema)
+import Data.Swagger (SchemaOptions (datatypeNameModifier), ToSchema (declareNamedSchema), defaultSchemaOptions, genericDeclareNamedSchema)
 import GHC.Generics (Generic)
 import Phonebook.Attribute
 
@@ -23,11 +23,21 @@ type New = Attributes Identity
 type Edit = Attributes Maybe
 
 deriving instance Show New
-deriving instance FromJSON New
-deriving instance ToJSON New
-deriving instance ToSchema New
+instance FromJSON New
+instance ToJSON New
+instance ToSchema New where
+  declareNamedSchema =
+    genericDeclareNamedSchema $
+      defaultSchemaOptions
+        { datatypeNameModifier = const "NewPerson"
+        }
 
 deriving instance Show Edit
-deriving instance FromJSON Edit
-deriving instance ToJSON Edit
-deriving instance ToSchema Edit
+instance FromJSON Edit
+instance ToJSON Edit
+instance ToSchema Edit where
+  declareNamedSchema =
+    genericDeclareNamedSchema $
+      defaultSchemaOptions
+        { datatypeNameModifier = const "EditPerson"
+        }

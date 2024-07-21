@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneDeriving #-}
@@ -7,7 +6,7 @@ module Phonebook.Users.User.Attributes (Attributes (..), New) where
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Functor.Identity (Identity)
-import Data.Swagger (ToSchema)
+import Data.Swagger (SchemaOptions (datatypeNameModifier), ToSchema (declareNamedSchema), defaultSchemaOptions, genericDeclareNamedSchema)
 import Data.Text (Text)
 import GHC.Generics (Generic)
 import Phonebook.Attribute (Attribute)
@@ -20,7 +19,12 @@ data Attributes f = Attributes
 
 type New = Attributes Identity
 
-deriving instance FromJSON New
-deriving instance ToJSON New
-deriving instance ToSchema New
+instance FromJSON New
+instance ToJSON New
+instance ToSchema New where
+  declareNamedSchema =
+    genericDeclareNamedSchema $
+      defaultSchemaOptions
+        { datatypeNameModifier = const "NewUser"
+        }
 deriving instance Show New
