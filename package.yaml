@@ -28,6 +28,8 @@ dependencies:
 - bytestring
 - utf8-string
 - postgresql-simple
+- beam-core
+- beam-postgres
 - resource-pool
 - servant
 - servant-server
@@ -42,6 +44,7 @@ dependencies:
 - servant-swagger
 - servant-swagger-ui
 - swagger2
+- dotenv
 
 ghc-options:
 - -Wall

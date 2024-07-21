@@ -1,6 +1,6 @@
 module Main (main) where
 
-import Lib
+import Phonebook.Web (startApp)
 
 main :: IO ()
 main = startApp

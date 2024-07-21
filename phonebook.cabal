@@ -29,12 +29,26 @@ library
       Api.Auth
       Api.Persons
       Api.Users
-      Db
       Db.Operations.Persons
       Db.Operations.Users
       Db.Queries.Persons
       Db.Queries.Users
-      Lib
+      Phonebook.Attribute
+      Phonebook.Database
+      Phonebook.Users.Database
+      Phonebook.Users.Database.Table
+      Phonebook.Users.User
+      Phonebook.Users.User.Attributes
+      Phonebook.Users.Web
+      Phonebook.Users.Web.All
+      Phonebook.Users.Web.Login
+      Phonebook.Users.Web.Login.Credentials
+      Phonebook.Users.Web.Login.Response
+      Phonebook.Users.Web.Login.User
+      Phonebook.Users.Web.Register
+      Phonebook.Web
+      Phonebook.Web.API
+      Phonebook.Web.Swagger
       Types.AuthUser
       Types.Credentials
       Types.EditPerson
@@ -54,7 +68,10 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , beam-core
+    , beam-postgres
     , bytestring
+    , dotenv
     , http-types
     , lens
     , password
@@ -88,7 +105,10 @@ executable phonebook-exe
   build-depends:
       aeson
     , base
+    , beam-core
+    , beam-postgres
     , bytestring
+    , dotenv
     , http-types
     , lens
     , password
@@ -124,7 +144,10 @@ test-suite phonebook-test
   build-depends:
       aeson
     , base
+    , beam-core
+    , beam-postgres
     , bytestring
+    , dotenv
     , hspec
     , hspec-wai
     , hspec-wai-json
