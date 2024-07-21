@@ -2,6 +2,7 @@ module Phonebook.Persons.Database (
   allPersons,
   personById,
   createPerson,
+  deletePerson,
   toPersonType,
 ) where
 
@@ -9,7 +10,7 @@ import Data.Int (Int32)
 import Data.Pool (Pool, withResource)
 import Database.Beam
 import Database.Beam.Backend.SQL.BeamExtensions (MonadBeamInsertReturning (runInsertReturningList))
-import Database.Beam.Postgres (Connection, Postgres, runBeamPostgresDebug)
+import Database.Beam.Postgres (Connection, Postgres, runBeamPostgres, runBeamPostgresDebug)
 import Phonebook.Database (PhonebookDb (phonebookPersons, phonebookUsers), db)
 import Phonebook.Persons.Database.Table
 import qualified Phonebook.Persons.Person as Person
@@ -58,11 +59,18 @@ createPerson conns np userId =
                   (val_ $ Attributes.number np)
                   (val_ $ UserId userId)
               ]
-      [user] <- runSelectReturningList $
-        select $ do
-          related_ (phonebookUsers db) (val_ $ _personUser person)
+      [user] <-
+        runSelectReturningList $
+          select $
+            related_ (phonebookUsers db) (val_ $ _personUser person)
 
       return (person, user)
+
+deletePerson :: Pool Connection -> Int32 -> IO ()
+deletePerson conns userId = withResource conns $ \conn ->
+  runBeamPostgres conn $
+    runDelete $
+      delete (phonebookPersons db) (\person -> _personId person ==. (val_ userId))
 
 toPersonType :: (Person, User) -> Person.Person
 toPersonType (person, user) =

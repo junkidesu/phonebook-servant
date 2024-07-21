@@ -1,6 +1,7 @@
 module Phonebook.Users.Database (
   allUsers,
   userByUsername,
+  userById,
   createUser,
   deleteUser,
   toUserType,
@@ -26,6 +27,12 @@ selectUserByUsername username =
     (\user -> _userUsername user ==. val_ username)
     selectAllUsers
 
+selectUserById :: Int32 -> Q Postgres PhonebookDb s (UserT (QExpr Postgres s))
+selectUserById userId =
+  filter_
+    (\user -> _userId user ==. val_ userId)
+    selectAllUsers
+
 allUsers :: Pool Connection -> IO [User]
 allUsers conns = withResource conns $ \conn -> do
   runBeamPostgres conn $ runSelectReturningList $ select selectAllUsers
@@ -36,6 +43,15 @@ userByUsername conns username = withResource conns $ \conn -> do
     runSelectReturningFirst $
       select $
         selectUserByUsername username
+
+userById :: Pool Connection -> Int32 -> IO (Maybe User)
+userById conns userId =
+  withResource conns $ \conn ->
+    runBeamPostgres conn
+      . runSelectReturningFirst
+      . select
+      . selectUserById
+      $ userId
 
 createUser :: Pool Connection -> Attributes.New -> IO User
 createUser conns nu = withResource conns $ \conn -> do

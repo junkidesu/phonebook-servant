@@ -42,6 +42,7 @@ library
       Phonebook.Persons.Web
       Phonebook.Persons.Web.All
       Phonebook.Persons.Web.Create
+      Phonebook.Persons.Web.Delete
       Phonebook.Persons.Web.Specific
       Phonebook.Users.Database
       Phonebook.Users.Database.Table
