@@ -8,16 +8,16 @@ module Phonebook.Persons.Database (
 ) where
 
 import Data.Int (Int32)
-import Data.Pool (Pool, withResource)
 import Database.Beam
 import Database.Beam.Backend.SQL.BeamExtensions (MonadBeamInsertReturning (runInsertReturningList), MonadBeamUpdateReturning (runUpdateReturningList))
-import Database.Beam.Postgres (Connection, Postgres, runBeamPostgres, runBeamPostgresDebug)
-import Phonebook.Database (PhonebookDb (phonebookPersons, phonebookUsers), db)
+import Database.Beam.Postgres
+import Phonebook.Database (PhonebookDb (phonebookPersons, phonebookUsers), db, withDatabaseConnection)
 import Phonebook.Persons.Database.Table
 import qualified Phonebook.Persons.Person as Person
 import qualified Phonebook.Persons.Person.Attributes as Attributes
 import Phonebook.Users.Database (toUserType)
 import Phonebook.Users.Database.Table (PrimaryKey (UserId), User, UserT)
+import Phonebook.Web.AppM (AppM)
 
 type PersonQuery s = Q Postgres PhonebookDb s (PersonT (QExpr Postgres s), UserT (QExpr Postgres s))
 
@@ -33,23 +33,25 @@ selectPersonById personId =
     (\(person, _) -> _personId person ==. val_ personId)
     selectAllPersons
 
-allPersons :: Pool Connection -> IO [(Person, User)]
-allPersons conns = withResource conns $ \conn ->
-  runBeamPostgresDebug putStrLn conn $
-    runSelectReturningList $
-      select selectAllPersons
+allPersons :: AppM [(Person, User)]
+allPersons = do
+  withDatabaseConnection $ \conn ->
+    runBeamPostgres conn $
+      runSelectReturningList $
+        select selectAllPersons
 
-personById :: Pool Connection -> Int32 -> IO (Maybe (Person, User))
-personById conns personId = withResource conns $ \conn ->
-  runBeamPostgresDebug putStrLn conn $
-    runSelectReturningFirst $
-      select $
-        selectPersonById personId
+personById :: Int32 -> AppM (Maybe (Person, User))
+personById personId = do
+  withDatabaseConnection $ \conn ->
+    runBeamPostgres conn $
+      runSelectReturningFirst $
+        select $
+          selectPersonById personId
 
-createPerson :: Pool Connection -> Attributes.New -> Int32 -> IO (Person, User)
-createPerson conns np userId =
-  withResource conns $ \conn -> do
-    runBeamPostgresDebug putStrLn conn $ do
+createPerson :: Attributes.New -> Int32 -> AppM (Person, User)
+createPerson np userId = do
+  withDatabaseConnection $ \conn -> do
+    runBeamPostgres conn $ do
       [person] <-
         runInsertReturningList $
           insert (phonebookPersons db) $
@@ -67,16 +69,17 @@ createPerson conns np userId =
 
       return (person, user)
 
-deletePerson :: Pool Connection -> Int32 -> IO ()
-deletePerson conns userId = withResource conns $ \conn ->
-  runBeamPostgres conn $
-    runDelete $
-      delete (phonebookPersons db) (\person -> _personId person ==. val_ userId)
+deletePerson :: Int32 -> AppM ()
+deletePerson userId = do
+  withDatabaseConnection $ \conn ->
+    runBeamPostgres conn $
+      runDelete $
+        delete (phonebookPersons db) (\person -> _personId person ==. val_ userId)
 
-updatePerson :: Pool Connection -> Int32 -> Attributes.Edit -> IO (Person, User)
-updatePerson conns personId ep =
-  withResource conns $ \conn -> do
-    runBeamPostgresDebug putStrLn conn $ do
+updatePerson :: Int32 -> Attributes.Edit -> AppM (Person, User)
+updatePerson personId ep = do
+  withDatabaseConnection $ \conn -> do
+    runBeamPostgres conn $ do
       [person] <-
         runUpdateReturningList $
           update

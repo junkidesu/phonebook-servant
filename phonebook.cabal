@@ -51,6 +51,8 @@ library
       Phonebook.Users.Web.Register
       Phonebook.Web
       Phonebook.Web.API
+      Phonebook.Web.AppM
+      Phonebook.Web.Environment
       Phonebook.Web.JWTAuth
       Phonebook.Web.Swagger
   other-modules:
@@ -82,6 +84,7 @@ library
     , string-conversions
     , swagger2
     , text
+    , transformers
     , utf8-string
     , wai
     , wai-logger
@@ -120,6 +123,7 @@ executable phonebook-exe
     , string-conversions
     , swagger2
     , text
+    , transformers
     , utf8-string
     , wai
     , wai-logger
@@ -162,6 +166,7 @@ test-suite phonebook-test
     , string-conversions
     , swagger2
     , text
+    , transformers
     , utf8-string
     , wai
     , wai-logger

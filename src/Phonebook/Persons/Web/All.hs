@@ -3,14 +3,13 @@
 
 module Phonebook.Persons.Web.All (Endpoint, handler) where
 
-import Control.Monad.IO.Class (MonadIO (liftIO))
-import Data.Pool (Pool)
-import Database.PostgreSQL.Simple (Connection)
 import Phonebook.Persons.Database (allPersons, toPersonType)
 import qualified Phonebook.Persons.Person as Person
+import Phonebook.Web.AppM (AppM)
 import Servant
 
 type Endpoint = Summary "Get all persons in the app" :> Get '[JSON] [Person.Person]
 
-handler :: Pool Connection -> Handler [Person.Person]
-handler conns = liftIO $ map toPersonType <$> allPersons conns
+handler :: AppM [Person.Person]
+handler = do
+  map toPersonType <$> allPersons

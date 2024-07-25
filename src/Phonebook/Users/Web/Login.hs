@@ -7,15 +7,14 @@ module Phonebook.Users.Web.Login (Endpoint, handler) where
 import Control.Monad.IO.Class (MonadIO (liftIO))
 import qualified Data.ByteString.Lazy.UTF8 as BLU
 import Data.Password.Bcrypt
-import Data.Pool (Pool)
 import qualified Data.Text as T
-import Database.PostgreSQL.Simple (Connection)
 import Phonebook.Users.Database (toUserType)
 import qualified Phonebook.Users.Database as Database
 import qualified Phonebook.Users.User as User
 import qualified Phonebook.Users.Web.Login.Credentials as Credentials
 import qualified Phonebook.Users.Web.Login.Response as Response
 import qualified Phonebook.Users.Web.Login.User as Login
+import Phonebook.Web.AppM (AppM)
 import Servant
 import Servant.Auth.Server (JWTSettings, makeJWT)
 
@@ -25,16 +24,14 @@ type Endpoint =
     :> ReqBody '[JSON] Credentials.Credentials
     :> Post '[JSON] Response.Response
 
-handler :: Pool Connection -> JWTSettings -> Credentials.Credentials -> Handler Response.Response
-handler conns jwts credentials = login
+handler :: JWTSettings -> Credentials.Credentials -> AppM Response.Response
+handler jwts credentials = login
  where
-  login :: Handler Response.Response
+  login :: AppM Response.Response
   login = do
     mbUser <-
-      liftIO $
-        Database.userByUsername
-          conns
-          (Credentials.username credentials)
+      Database.userByUsername
+        (Credentials.username credentials)
 
     case toUserType <$> mbUser of
       Nothing ->

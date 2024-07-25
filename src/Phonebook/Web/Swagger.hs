@@ -10,7 +10,8 @@ import Data.Swagger
 import qualified Phonebook.Persons.Web as Persons
 import qualified Phonebook.Users.Web as Users
 import Phonebook.Web.API hiding (server)
-import Servant (Server)
+import Phonebook.Web.AppM (AppM)
+import Servant (HasServer (ServerT))
 import Servant.Auth.Swagger ()
 import Servant.Swagger
 import Servant.Swagger.UI
@@ -41,5 +42,5 @@ swaggerDoc =
     & applyTagsFor usersOpts ["users" & description ?~ "Operations on users"]
     & applyTagsFor personsOpts ["persons" & description ?~ "Operations on persons"]
 
-server :: Server PhonebookSwagger
-server = swaggerSchemaUIServer swaggerDoc
+server :: ServerT PhonebookSwagger AppM
+server = swaggerSchemaUIServerT swaggerDoc

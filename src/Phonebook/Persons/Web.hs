@@ -3,13 +3,12 @@
 
 module Phonebook.Persons.Web (API, server) where
 
-import Data.Pool (Pool)
-import Database.PostgreSQL.Simple (Connection)
 import qualified Phonebook.Persons.Web.All as All
 import qualified Phonebook.Persons.Web.Create as Create
 import qualified Phonebook.Persons.Web.Delete as Delete
 import qualified Phonebook.Persons.Web.Specific as Specific
 import qualified Phonebook.Persons.Web.Update as Update
+import Phonebook.Web.AppM (AppM)
 import Servant
 
 type API =
@@ -22,10 +21,10 @@ type API =
           :<|> Update.Endpoint
        )
 
-server :: Pool Connection -> Server API
-server conns =
-  All.handler conns
-    :<|> Specific.handler conns
-    :<|> Create.handler conns
-    :<|> Delete.handler conns
-    :<|> Update.handler conns
+server :: ServerT API AppM
+server =
+  All.handler
+    :<|> Specific.handler
+    :<|> Create.handler
+    :<|> Delete.handler
+    :<|> Update.handler
