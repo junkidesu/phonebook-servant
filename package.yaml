@@ -25,9 +25,11 @@ dependencies:
 - aeson
 - lens
 - text
+- time
 - password
 - bytestring
 - utf8-string
+- insert-ordered-containers
 - postgresql-simple
 - beam-core
 - beam-postgres
@@ -35,17 +37,19 @@ dependencies:
 - servant
 - servant-server
 - servant-auth
-- servant-auth-swagger
 - servant-auth-server
 - string-conversions
 - wai
 - wai-logger
 - warp
 - http-types
-- servant-swagger
+- http-client
+- servant-openapi3
 - servant-swagger-ui
-- swagger2
+- openapi3
 - dotenv
+- conduit
+- minio-hs
 
 ghc-options:
 - -Wall

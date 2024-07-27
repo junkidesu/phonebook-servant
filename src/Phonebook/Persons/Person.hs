@@ -4,7 +4,7 @@ module Phonebook.Persons.Person (Person (..)) where
 
 import Data.Aeson
 import Data.Int (Int32)
-import Data.Swagger (ToSchema)
+import Data.OpenApi (ToSchema)
 import Data.Text
 import GHC.Generics (Generic)
 import Phonebook.Users.User (User)

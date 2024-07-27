@@ -6,7 +6,7 @@ module Phonebook.Users.User.Attributes (Attributes (..), New) where
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Functor.Identity (Identity)
-import Data.Swagger (SchemaOptions (datatypeNameModifier), ToSchema (declareNamedSchema), defaultSchemaOptions, genericDeclareNamedSchema)
+import Data.OpenApi (SchemaOptions (datatypeNameModifier), ToSchema (declareNamedSchema), defaultSchemaOptions, genericDeclareNamedSchema)
 import Data.Text (Text)
 import GHC.Generics (Generic)
 import Phonebook.Attribute (Attribute)

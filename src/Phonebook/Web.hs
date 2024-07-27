@@ -11,15 +11,14 @@ import Phonebook.Database (connectToDb)
 import qualified Phonebook.Web.API as API
 import Phonebook.Web.AppM (AppM)
 import Phonebook.Web.Environment (Environment (Environment))
-import qualified Phonebook.Web.Swagger as Swagger
+import qualified Phonebook.Web.OpenApi as OpenApi
 import Servant
 import Servant.Auth.Server (CookieSettings, JWTSettings, defaultCookieSettings, defaultJWTSettings, generateKey)
-import Servant.Auth.Swagger ()
 
-type Phonebook = API.API :<|> Swagger.PhonebookSwagger
+type Phonebook = API.API :<|> OpenApi.PhonebookOpenApi
 
 server :: JWTSettings -> ServerT Phonebook AppM
-server jwts = API.server jwts :<|> Swagger.server
+server jwts = API.server jwts :<|> OpenApi.server
 
 api :: Proxy Phonebook
 api = Proxy

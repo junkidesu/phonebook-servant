@@ -9,7 +9,7 @@ import Control.Lens hiding ((.=))
 import Data.Aeson
 import Data.Data
 import Data.Int (Int32)
-import Data.Swagger
+import Data.OpenApi
 import Data.Text (Text)
 import Database.PostgreSQL.Simple
 import GHC.Generics (Generic)
@@ -35,6 +35,6 @@ instance ToSchema User where
     return $
       NamedSchema (Just "User") $
         mempty
-          & type_ ?~ SwaggerObject
+          & type_ ?~ OpenApiObject
           & properties .~ [("id", intSchema), ("username", textSchema)]
           & required .~ ["id", "username"]

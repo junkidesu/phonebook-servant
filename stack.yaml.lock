@@ -5,6 +5,17 @@
 
 packages:
 - completed:
+    name: minio-hs
+    pantry-tree:
+      sha256: 9d57f877e5581d90f716f8f7350ef0404d19a836ea555d9f55038fc71c91b29b
+      size: 4744
+    sha256: 18f88790c5be1c23e422068cac3f262a7faf83d6b1e51b26d1abad164e0a93e2
+    size: 98879
+    url: https://github.com/minio/minio-hs/archive/fd202f7.tar.gz
+    version: 1.7.0
+  original:
+    url: https://github.com/minio/minio-hs/archive/fd202f7.tar.gz
+- completed:
     name: beam-postgres
     pantry-tree:
       sha256: 142b0b91c6e6f450bce35986dbed7bd3a40a978f160d1f6bb59b794beb228790

@@ -54,7 +54,8 @@ library
       Phonebook.Web.AppM
       Phonebook.Web.Environment
       Phonebook.Web.JWTAuth
-      Phonebook.Web.Swagger
+      Phonebook.Web.OpenApi
+      Servant.Auth.OpenApi
   other-modules:
       Paths_phonebook
   autogen-modules:
@@ -68,22 +69,26 @@ library
     , beam-core
     , beam-postgres
     , bytestring
+    , conduit
     , dotenv
+    , http-client
     , http-types
+    , insert-ordered-containers
     , lens
+    , minio-hs
+    , openapi3
     , password
     , postgresql-simple
     , resource-pool
     , servant
     , servant-auth
     , servant-auth-server
-    , servant-auth-swagger
+    , servant-openapi3
     , servant-server
-    , servant-swagger
     , servant-swagger-ui
     , string-conversions
-    , swagger2
     , text
+    , time
     , transformers
     , utf8-string
     , wai
@@ -106,9 +111,14 @@ executable phonebook-exe
     , beam-core
     , beam-postgres
     , bytestring
+    , conduit
     , dotenv
+    , http-client
     , http-types
+    , insert-ordered-containers
     , lens
+    , minio-hs
+    , openapi3
     , password
     , phonebook
     , postgresql-simple
@@ -116,13 +126,12 @@ executable phonebook-exe
     , servant
     , servant-auth
     , servant-auth-server
-    , servant-auth-swagger
+    , servant-openapi3
     , servant-server
-    , servant-swagger
     , servant-swagger-ui
     , string-conversions
-    , swagger2
     , text
+    , time
     , transformers
     , utf8-string
     , wai
@@ -146,12 +155,17 @@ test-suite phonebook-test
     , beam-core
     , beam-postgres
     , bytestring
+    , conduit
     , dotenv
     , hspec
     , hspec-wai
     , hspec-wai-json
+    , http-client
     , http-types
+    , insert-ordered-containers
     , lens
+    , minio-hs
+    , openapi3
     , password
     , phonebook
     , postgresql-simple
@@ -159,13 +173,12 @@ test-suite phonebook-test
     , servant
     , servant-auth
     , servant-auth-server
-    , servant-auth-swagger
+    , servant-openapi3
     , servant-server
-    , servant-swagger
     , servant-swagger-ui
     , string-conversions
-    , swagger2
     , text
+    , time
     , transformers
     , utf8-string
     , wai

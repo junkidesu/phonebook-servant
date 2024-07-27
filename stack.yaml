@@ -42,6 +42,8 @@ packages:
 #
 # extra-deps: []
 extra-deps:
+- github: minio/minio-hs
+  commit: fd202f7
 - github: haskell-beam/beam
   commit: b2e83c4bcbf818b4cc901d355f4f50e1e1a284a3
   subdir: beam-postgres

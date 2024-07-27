@@ -1,4 +1,3 @@
-{-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE StandaloneDeriving #-}
@@ -9,7 +8,7 @@ import Data.Text (Text)
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Functor.Identity (Identity)
-import Data.Swagger (SchemaOptions (datatypeNameModifier), ToSchema (declareNamedSchema), defaultSchemaOptions, genericDeclareNamedSchema)
+import Data.OpenApi (SchemaOptions (datatypeNameModifier), ToSchema (declareNamedSchema), defaultSchemaOptions, genericDeclareNamedSchema)
 import GHC.Generics (Generic)
 import Phonebook.Attribute
 

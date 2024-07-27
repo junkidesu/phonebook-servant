@@ -25,3 +25,4 @@ cabal.project.local~
 db
 .env
 postgres_data/
+minio_data/

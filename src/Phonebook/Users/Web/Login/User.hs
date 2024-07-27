@@ -4,7 +4,7 @@ module Phonebook.Users.Web.Login.User (User (..)) where
 
 import Data.Aeson (FromJSON, ToJSON)
 import Data.Int (Int32)
-import Data.Swagger (ToSchema)
+import Data.OpenApi (ToSchema)
 import Data.Text (Text)
 import GHC.Generics
 import Servant.Auth.JWT (FromJWT, ToJWT)

@@ -3,7 +3,7 @@
 module Phonebook.Users.Web.Login.Credentials (Credentials (..)) where
 
 import Data.Aeson (FromJSON, ToJSON)
-import Data.Swagger (ToSchema)
+import Data.OpenApi (ToSchema)
 import Data.Text (Text)
 import GHC.Generics (Generic)
 

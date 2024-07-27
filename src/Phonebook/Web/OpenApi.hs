@@ -2,31 +2,31 @@
 {-# LANGUAGE OverloadedLists #-}
 {-# LANGUAGE OverloadedStrings #-}
 
-module Phonebook.Web.Swagger (PhonebookSwagger, server) where
+module Phonebook.Web.OpenApi (PhonebookOpenApi, server) where
 
 import Control.Lens
 import Data.Data (Proxy (Proxy))
-import Data.Swagger
+import Data.OpenApi hiding (server)
 import qualified Phonebook.Persons.Web as Persons
 import qualified Phonebook.Users.Web as Users
 import Phonebook.Web.API hiding (server)
 import Phonebook.Web.AppM (AppM)
 import Servant (HasServer (ServerT))
-import Servant.Auth.Swagger ()
-import Servant.Swagger
+import Servant.Auth.OpenApi ()
+import Servant.OpenApi
 import Servant.Swagger.UI
 
-type PhonebookSwagger = SwaggerSchemaUI "swagger-ui" "swagger.json"
+type PhonebookOpenApi = SwaggerSchemaUI "swagger-ui" "swagger.json"
 
-usersOpts :: Traversal' Swagger Operation
+usersOpts :: Traversal' OpenApi Operation
 usersOpts = subOperations (Proxy :: Proxy Users.API) (Proxy :: Proxy API)
 
-personsOpts :: Traversal' Swagger Operation
+personsOpts :: Traversal' OpenApi Operation
 personsOpts = subOperations (Proxy :: Proxy Persons.API) (Proxy :: Proxy API)
 
-swaggerDoc :: Swagger
-swaggerDoc =
-  toSwagger (Proxy :: Proxy API)
+openApiDoc :: OpenApi
+openApiDoc =
+  toOpenApi (Proxy :: Proxy API)
     & info
       . title
       .~ "Phonebook API"
@@ -42,5 +42,5 @@ swaggerDoc =
     & applyTagsFor usersOpts ["users" & description ?~ "Operations on users"]
     & applyTagsFor personsOpts ["persons" & description ?~ "Operations on persons"]
 
-server :: ServerT PhonebookSwagger AppM
-server = swaggerSchemaUIServerT swaggerDoc
+server :: ServerT PhonebookOpenApi AppM
+server = swaggerSchemaUIServerT openApiDoc
