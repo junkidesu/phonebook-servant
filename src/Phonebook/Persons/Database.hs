@@ -4,10 +4,12 @@ module Phonebook.Persons.Database (
   createPerson,
   deletePerson,
   updatePerson,
+  updateAvatar,
   toPersonType,
 ) where
 
 import Data.Int (Int32)
+import Data.Text (Text)
 import Database.Beam
 import Database.Beam.Backend.SQL.BeamExtensions (MonadBeamInsertReturning (runInsertReturningList), MonadBeamUpdateReturning (runUpdateReturningList))
 import Database.Beam.Postgres
@@ -60,6 +62,7 @@ createPerson np userId = do
                   default_
                   (val_ $ Attributes.name np)
                   (val_ $ Attributes.number np)
+                  (val_ Nothing)
                   (val_ $ UserId userId)
               ]
       [user] <-
@@ -99,10 +102,27 @@ updatePerson personId ep = do
 
       return (person, user)
 
+updateAvatar :: Int32 -> Text -> AppM (Person, User)
+updateAvatar personId avatarUrl = withDatabaseConnection $
+  \conn -> do
+    runBeamPostgres conn $ do
+      [person] <-
+        runUpdateReturningList $
+          update
+            (phonebookPersons db)
+            (\person -> mconcat [_personAvatar person <-. val_ (Just avatarUrl)])
+            (\person -> _personId person ==. val_ personId)
+      [user] <-
+        runSelectReturningList $
+          select $
+            related_ (phonebookUsers db) (val_ $ _personUser person)
+      return (person, user)
+
 toPersonType :: (Person, User) -> Person.Person
 toPersonType (person, user) =
   Person.Person
     (_personId person)
     (_personName person)
     (_personNumber person)
+    (_personAvatar person)
     (toUserType user)

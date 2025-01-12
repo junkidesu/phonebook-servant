@@ -13,6 +13,7 @@ import Phonebook.Web.API hiding (server)
 import Phonebook.Web.AppM (AppM)
 import Servant (HasServer (ServerT))
 import Servant.Auth.OpenApi ()
+import Servant.Multipart.OpenApi ()
 import Servant.OpenApi
 import Servant.Swagger.UI
 

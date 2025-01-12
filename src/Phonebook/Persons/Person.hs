@@ -13,6 +13,7 @@ data Person = Person
   { id :: !Int32
   , name :: !Text
   , number :: !Text
+  , avatar :: !(Maybe Text)
   , author :: !User
   }
   deriving (Show, Generic)

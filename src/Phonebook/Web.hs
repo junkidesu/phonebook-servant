@@ -1,10 +1,13 @@
 {-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators #-}
 
 module Phonebook.Web (startApp) where
 
 import Configuration.Dotenv
 import Control.Monad.Trans.Reader
+import Network.HTTP.Client (defaultManagerSettings, newManager)
+import Network.Minio
 import Network.Wai.Handler.Warp
 import Network.Wai.Logger (withStdoutLogger)
 import Phonebook.Database (connectToDb)
@@ -23,11 +26,23 @@ server jwts = API.server jwts :<|> OpenApi.server
 api :: Proxy Phonebook
 api = Proxy
 
+connectMinio :: IO MinioConn
+connectMinio = do
+  manager <- newManager defaultManagerSettings
+
+  Just creds <- findFirst [fromMinioEnv, fromAWSEnv]
+
+  mkMinioConn
+    (setCreds creds "http://127.0.0.1:9000")
+    manager
+
 startApp :: IO ()
 startApp = do
   onMissingFile (loadFile defaultConfig) (putStrLn "Invalid environment")
 
   connectionPool <- connectToDb
+
+  minioConn <- connectMinio
 
   myKey <- generateKey
 
@@ -39,7 +54,7 @@ startApp = do
         hoistServerWithContext
           api
           (Proxy :: Proxy '[CookieSettings, JWTSettings])
-          (`runReaderT` Environment connectionPool)
+          (`runReaderT` Environment connectionPool minioConn)
           (server jwtCfg)
   withStdoutLogger $ \aplogger -> do
     let settings = setPort 3003 $ setLogger aplogger defaultSettings

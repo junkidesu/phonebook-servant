@@ -15,7 +15,7 @@ import Servant.Auth.Server (AuthResult (Authenticated))
 type Endpoint =
   Summary "Add user to the app"
     :> JWTAuth
-    :> ReqBody' '[Required, Description "Name and number of the person to add"] '[JSON] Attributes.New
+    :> ReqBody' '[Required] '[JSON] Attributes.New
     :> PostCreated '[JSON] Person.Person
 
 handler :: AuthResult Login.User -> Attributes.New -> AppM Person.Person

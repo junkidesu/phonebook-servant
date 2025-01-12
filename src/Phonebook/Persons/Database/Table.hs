@@ -20,6 +20,7 @@ data PersonT f = Person
   { _personId :: C f Int32
   , _personName :: C f Text
   , _personNumber :: C f Text
+  , _personAvatar :: C f (Maybe Text)
   , _personUser :: PrimaryKey UserT f
   }
   deriving (Generic, Beamable)

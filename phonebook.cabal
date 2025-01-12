@@ -75,6 +75,7 @@ library
     , conduit
     , dotenv
     , http-client
+    , http-media
     , http-types
     , insert-ordered-containers
     , lens
@@ -86,6 +87,7 @@ library
     , servant
     , servant-auth
     , servant-auth-server
+    , servant-multipart
     , servant-openapi3
     , servant-server
     , servant-swagger-ui
@@ -117,6 +119,7 @@ executable phonebook-exe
     , conduit
     , dotenv
     , http-client
+    , http-media
     , http-types
     , insert-ordered-containers
     , lens
@@ -129,6 +132,7 @@ executable phonebook-exe
     , servant
     , servant-auth
     , servant-auth-server
+    , servant-multipart
     , servant-openapi3
     , servant-server
     , servant-swagger-ui
@@ -164,6 +168,7 @@ test-suite phonebook-test
     , hspec-wai
     , hspec-wai-json
     , http-client
+    , http-media
     , http-types
     , insert-ordered-containers
     , lens
@@ -176,6 +181,7 @@ test-suite phonebook-test
     , servant
     , servant-auth
     , servant-auth-server
+    , servant-multipart
     , servant-openapi3
     , servant-server
     , servant-swagger-ui

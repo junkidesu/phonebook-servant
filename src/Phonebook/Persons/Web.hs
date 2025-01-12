@@ -4,6 +4,7 @@
 module Phonebook.Persons.Web (API, server) where
 
 import qualified Phonebook.Persons.Web.All as All
+import qualified Phonebook.Persons.Web.Avatar.Update as Avatar.Update
 import qualified Phonebook.Persons.Web.Create as Create
 import qualified Phonebook.Persons.Web.Delete as Delete
 import qualified Phonebook.Persons.Web.Specific as Specific
@@ -19,6 +20,7 @@ type API =
           :<|> Create.Endpoint
           :<|> Delete.Endpoint
           :<|> Update.Endpoint
+          :<|> Avatar.Update.Endpoint
        )
 
 server :: ServerT API AppM
@@ -28,3 +30,4 @@ server =
     :<|> Create.handler
     :<|> Delete.handler
     :<|> Update.handler
+    :<|> Avatar.Update.handler
