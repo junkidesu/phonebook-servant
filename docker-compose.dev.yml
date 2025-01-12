@@ -28,3 +28,19 @@ services:
       - 9001:9001
     volumes:
       - ./minio_data:/data
+  
+  app:
+    image: phonebook
+    build: .
+    ports:
+      - 3003:3003
+    depends_on:
+      - db
+    links:
+      - db
+    environment:
+      - PORT=${PORT}
+      - DATABASE_URL=postgres://postgres:example@db:5432/postgres
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+
