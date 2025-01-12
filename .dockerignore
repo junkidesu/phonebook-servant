@@ -26,3 +26,5 @@ cabal.project.local~
 .gitignore
 Dockerfile
 .git/
+minio_data/
+postgres_data/
