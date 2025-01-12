@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -33,6 +33,7 @@ library
       Phonebook.Persons.Person.Attributes
       Phonebook.Persons.Web
       Phonebook.Persons.Web.All
+      Phonebook.Persons.Web.Avatar.Update
       Phonebook.Persons.Web.Create
       Phonebook.Persons.Web.Delete
       Phonebook.Persons.Web.Specific
@@ -54,8 +55,10 @@ library
       Phonebook.Web.AppM
       Phonebook.Web.Environment
       Phonebook.Web.JWTAuth
+      Phonebook.Web.Minio
       Phonebook.Web.OpenApi
       Servant.Auth.OpenApi
+      Servant.Multipart.OpenApi
   other-modules:
       Paths_phonebook
   autogen-modules:

@@ -50,6 +50,7 @@ dependencies:
 - dotenv
 - conduit
 - minio-hs
+- servant-multipart
 
 ghc-options:
 - -Wall
