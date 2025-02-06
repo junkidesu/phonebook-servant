@@ -1,6 +1,6 @@
 # Phonebook API
 
-A simple REST API written with the <a href="https://www.servant.dev/">Servant</a> web framework. For sake of simplicity, SQLite was used as the DB (<a href="https://hackage.haskell.org/package/sqlite-simple-0.4.18.2">sqlite-simple</a>).
+A simple REST API written with the <a href="https://www.servant.dev/">Servant</a> web framework. In older versions, SQLite was used as the DB for sake of simpicity (<a href="https://hackage.haskell.org/package/sqlite-simple-0.4.18.2">sqlite-simple</a>). The project was re-written to use [Beam](https://haskell-beam.github.io/beam/).
 
 ## Technologies Used
 
